@@ -1,3 +1,13 @@
+<?php
+
+/**
+ * Radix sort algorithm implementation.
+ * @author oprohonnyi@gmail.com
+ * @license Apache-2.0
+ */
+
+?>
+
 <h4>Radix sort (LSD)</h4>
 
 <?php

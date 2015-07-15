@@ -1,6 +1,12 @@
 <?php
 
-//error_reporting(E_ERROR | E_PARSE);
+/**
+ * Sorting algorithms index page.
+ * @author oprohonnyi@gmail.com
+ * @license Apache-2.0
+ */
+
+
 include("utils.php");
 
 ?>

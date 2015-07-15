@@ -1,3 +1,13 @@
+<?php
+
+/**
+ * Bucket sort algorithm implementation.
+ * @author oprohonnyi@gmail.com
+ * @license Apache-2.0
+ */
+
+?>
+
 <h4>Bucket sort</h4>
 
 <?php

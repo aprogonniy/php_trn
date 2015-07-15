@@ -1,0 +1,12 @@
+<?php
+
+define("STRATEGY_VALUE_DEFAULT", NULL);
+
+define("VELOCITY_TAXI", 100);
+define("VELOCITY_BUS", 80);
+define("VELOCITY_SHUTTLE", 80);
+
+define("STOP_TIME_BUS", 0.1);
+
+define("DESTINATION_STOPS_DEFAULT", 0);
+define("DESTINATION_DISTANCE_DEFAULT", 0);

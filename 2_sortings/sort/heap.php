@@ -1,3 +1,13 @@
+<?php
+
+/**
+ * Heap sort algorithm implementation.
+ * @author oprohonnyi@gmail.com
+ * @license Apache-2.0
+ */
+
+?>
+
 <h4>Heap sort</h4>
 
 <?php

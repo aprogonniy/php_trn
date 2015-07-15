@@ -1,3 +1,13 @@
+<?php
+
+/**
+ * Merge (top-down) sort algorithm implementation.
+ * @author oprohonnyi@gmail.com
+ * @license Apache-2.0
+ */
+
+?>
+
 <h4>Merge (top-down) sort</h4>
 
 <?php

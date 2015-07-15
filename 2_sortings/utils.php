@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Utils for sorting methods.
+ * @author oprohonnyi@gmail.com
+ * @license Apache-2.0
+ */
+
 function _swapArrEl(&$arr, $i, $j)
 {
     $temp = $arr[$i];
