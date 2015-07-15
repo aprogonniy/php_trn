@@ -16,6 +16,8 @@ class TicketContentGenerator
             $a[$i] = $i;
         }
 
-        return shuffle($a);
+        shuffle($a);
+
+        return $a;
     }
 }

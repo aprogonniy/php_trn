@@ -17,7 +17,9 @@ class BingoTicket75Impl implements BingoTicket
 
     public function render()
     {
-        print "Ticket " . $this->id . ": [" . $this->content . "]";
+        print "Ticket " . $this->id . ": [";
+        print_r($this->content);
+        print " ]";
     }
 
     public function getId()

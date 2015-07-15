@@ -2,10 +2,10 @@
 
 class BingoTicket30Impl implements BingoTicket
 {
-    private $id = PREFIX_BINGO_30;
-    private $state = STATE_CREATED;
-    private $content = [];
-    private $type = TYPE_BINGO_30;
+    public $id = PREFIX_BINGO_30;
+    public $state = STATE_CREATED;
+    public $content = [];
+    public $type = TYPE_BINGO_30;
 
     public function __construct($content)
     {
@@ -17,7 +17,9 @@ class BingoTicket30Impl implements BingoTicket
 
     public function render()
     {
-        print "Ticket " . $this->id . ": [" . $this->content . "]";
+        print "Ticket " . $this->id . ": [";
+        print_r($this->content);
+        print " ]";
     }
 
     public function getId()
