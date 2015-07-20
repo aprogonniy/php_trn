@@ -1,0 +1,2306 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Linux performance bottlenecks</title>
+<link rel="stylesheet" type="text/css" href="../../CSS/main.css">
+</head>
+
+<body>
+
+<basefont face="Times" size="3">
+<table border="0" width="100%" id="table1" height="135">
+<tr>
+<td rowspan="2" width="40%">
+
+<p align="center"><font face="Bernard MT Condensed" color="#FF0000" size="7">
+<a target="_blank" href="http://www.softpanorama.org/index.shtml"><font color="#FF0000">Softpanorama</font></a></font><b><br>
+</b><i><b><font size="2">May the source be with you, but remember the KISS principle ;-)</font></b></i></p>
+</td>
+<td colspan="6" align="center" valign="bottom">
+<form action="http://www.google.com/cse" id="cse-search-box">
+<input type="hidden" name="cx" value="partner-pub-4031247137266443:ye0t3e-czf5" />
+<input type="hidden" name="ie" value="ISO-8859-1" />
+<input type="text" name="q" size="60" /> <input type="submit" name="sa" value="Search" />
+<img src="http://www.google.com/images/poweredby_transparent/poweredby_999999.gif" alt="Google" />
+</form>
+</td>
+</tr>
+<tr>
+<td bgcolor="#F5F5F5" align="center" width="9%"><b><a href="/switchboard.shtml">Contents</a></b></td>
+<td bgcolor="#F5F5F5" align="center" width="7%"><b>
+<a href="/bulletin.shtml">Bulletin</a></b></td>
+<td bgcolor="#F5F5F5" align="center" width="16%"><b><font size="2">
+<a href="/scriptorama.shtml">Scripting in shell and Perl</a></font></b></td>
+<td bgcolor="#F5F5F5" align="center" width="10%"><b><font size="2">
+<a href="/netorama.shtml">Network troubleshooting</a></font></b></td>
+<td bgcolor="#F5F5F5" align="center" width="7%"><b><a href="/History/index.shtml">History</a></b></td>
+<td bgcolor="#F5F5F5" align="center" width="7%"><b><a href="/Bulletin/Humor/index.shtml">Humor</a></b></td>
+</tr>
+</table>
+
+<center>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- top_large_banner -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:970px;height:90px"
+     data-ad-client="ca-pub-4031247137266443"
+     data-ad-slot="9138796897"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+ </center>
+<hr width="100%" noshade size="5" color="#FF0000">
+
+
+<h1>How to troubleshoot Linux performance bottlenecks</h1>
+
+<table border="1" width="100%" bgcolor="#FFFFCC" id="table1">
+	<tr>
+		<td width="9%" align="center">
+
+		<p align="center"><a href="#Technical Support">News</a></p>
+		</td>
+		<td width="9%" align="center">
+
+		<p align="center"><b><a href="../../HPC/index.shtml">Performance tuning</a></b></p>
+		</td>
+		<td width="6%" align="center">
+
+		<p align="center"><b><a href="#Recommended_Links">Recommended Links</a></b></p>
+		</td>
+		<td width="6%" align="center">
+
+		<p align="center"><a href="kernel_tuning.shtml">Linux Kernel Tuning</a></p>
+		</td>
+		<td width="6%" align="center">
+
+		<p align="center"><a href="../../Internals/System_calls/system_v_ipc.shtml">IRC</a></p>
+		</td>
+		<td width="5%" align="center"><a href="#Technical Support">Man Pages</a></td>
+		<td width="5%" align="center">
+
+		<p align="center"><a href="#Technical Support">Reference</a></p>
+		</td>
+		<td width="4%" align="center">&nbsp;</td>
+	</tr>
+	<tr>
+		<td width="9%" align="center">
+
+		<p align="center"><a href="#Technical Support">Upgrades</a></p>
+		</td>
+		<td width="9%" align="center">
+
+		<p align="center"><a href="#HOW-TOs">HOW-TOs</a></p>
+		</td>
+		<td width="5%" align="center">
+
+		<p align="center"><a href="#Installation">Keyboard and Shell</a></p>
+		</td>
+		<td width="4%" align="center">
+
+		<p align="center"><a href="#Partitioning">Disks and partitioning</a></p>
+		</td>
+		<td width="6%" align="center">
+
+		<p align="center"><a href="#Swap partition">Swap partition</a></p>
+		</td>
+		<td width="6%" align="center">
+
+		<p align="center"><a href="#Net">Net</a></p>
+		</td>
+		<td width="6%" align="center">
+
+		<p align="center"><font color="#000000"><b><a href="../../Bulletin/Humor/index.shtml">Humor</a></b></font></p>
+		</td>
+		<td width="6%" align="center">&nbsp;</td>
+	</tr>
+</table>
+
+<div align="left">
+<table border="0" width="178" height="620" align="right" cellspacing="4" bgcolor="#FFFFFF">
+<tr><td>
+<table border="1" width="174" height="616" align="center" bgcolor="#FF0000">
+<tr><td>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Upper skyscaper -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:160px;height:600px"
+     data-ad-client="ca-pub-4031247137266443"
+     data-ad-slot="0371843916"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</td></tr></table>
+</td></tr></table>
+</div>
+
+
+<p>Here is a relevant quote from Tuning Red Hat Enterprise Linux on IBM Eserver xSeries Servers (2005)</p>
+<b>
+<blockquote>
+
+	<p>Identifying bottlenecks</p>
+	</b>
+
+	<p>The following steps are used as our quick tuning strategy:</p>
+	<ol>
+
+		<li>
+
+		<p>Know your system.</p>
+		</li>
+
+		<li>
+
+		<p>Back up the system.</p>
+		</li>
+
+		<li>
+
+		<p>Monitor and analyze the system’s performance.</p>
+		</li>
+
+		<li>
+
+		<p>Narrow down the bottleneck and find its cause.</p>
+		</li>
+
+		<li>
+
+		<p>Fix the bottleneck cause by trying only one single change at a time.</p>
+		</li>
+
+		<li>
+
+		<p>Go back to step 3 until you are satisfied with the performance of the system.</p>
+		</li>
+	</ol>
+	<!---google box ------->
+<table border="0" width="310" align="left" cellspacing="7" cellpadding="4">
+<tr><td width="340" bgcolor="#FFFF00" valign="center" align="center">
+<center>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Top Large Rectangle -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-4031247137266443"
+     data-ad-slot="3274064497"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></center>
+</td></tr>
+</table>
+<!---end of google box ------->
+
+	<p>4.1.1 Gathering information</p>
+
+	<p>Mostly likely, the only first-hand information you will have access to will be statements such 
+	as “There is a problem with the server.” It is crucial to use probing questions to clarify and document 
+	the problem. Here is a list of questions you should ask to help you get a better picture of the 
+	system.</p>
+
+	<p>Can you give me a complete description of the server in question?</p>
+	<ul>
+
+		<li>
+
+		<p>– Model</p>
+		</li>
+
+		<li>
+
+		<p>– Age</p>
+		</li>
+
+		<li>
+
+		<p>– Configuration</p>
+		</li>
+
+		<li>
+
+		<p>– Peripheral equipment</p>
+		</li>
+
+		<li>
+
+		<p>– Operating system version and update level</p>
+		</li>
+	</ul>
+
+	<p>Can you tell me <i>exactly</i> what the problem is?</p>
+	<ul>
+
+		<li>
+
+		<p><b>What are the symptoms</b>?</p>
+		</li>
+
+		<li>
+
+		<p><b>Describe any error messages</b>.Some people will have problems answering this question, 
+		but any extra information the customer can give you might enable you to find the problem. For 
+		example, the customer might say “It is really slow when I copy large files to the server.” This 
+		might indicate a network problem or a disk subsystem problem.</p>
+		</li>
+
+		<li>
+
+		<p><b>Who is experiencing the problem?</b> Is one person, one particular group of people, or 
+		the entire organization experiencing the problem? This helps determine whether the problem exists 
+		in one particular part of the network, whether it is application-dependent, and so on. If only 
+		one user experiences the problem, then the problem might be with the user’s PC (or their imagination).The 
+		perception clients have of the server is usually a key factor. From this point of view, performance 
+		problems may not be directly related to the server: the network path between the server and 
+		the clients can easily be the cause of the problem. This path includes network devices as well 
+		as services provided by other servers, such as domain controllers.</p>
+		</li>
+
+		<li>
+
+		<p><b>Can the problem be reproduced?</b> All reproducible problems can be solved. If you have 
+		sufficient knowledge of the system, you should be able to narrow the problem to its root and 
+		decide which actions should be taken.</p>
+		</li>
+	</ul>
+	<blockquote>
+
+		<p><b>Tip: </b>You should document each step, especially the changes you make and their effect 
+		on performance.</p>
+
+		<p>The fact that the problem can be reproduced enables you to see and understand it better.</p>
+
+		<p>Document the sequence of actions that are necessary to reproduce the problem:</p>
+		<ul>
+
+			<li>
+
+			<p>– What are the steps to reproduce the problem? Knowing the steps may help you reproduce 
+			the same problem on a different machine under the same conditions. If this works, it gives 
+			you the opportunity to use a machine in a test environment and removes the chance of crashing 
+			the production server.</p>
+			</li>
+
+			<li>
+
+			<p>– Is it an intermittent problem? If the problem is intermittent, the first thing to do 
+			is to gather information and find a path to move the problem in the reproducible category. 
+			The goal here is to have a scenario to make the problem happen on command.</p>
+			</li>
+
+			<li>
+
+			<p>– Does it occur at certain times of the day or certain days of the week? This might help 
+			you determine what is causing the problem. It may occur when everyone arrives for work or 
+			returns from lunch. Look for ways to change the timing (that is, make it happen less or 
+			more often); if there are ways to do so, the problem becomes a reproducible one.</p>
+			</li>
+
+			<li>
+
+			<p>– Is it unusual? If the problem falls into the non-reproducible category, you may conclude 
+			that it is the result of extraordinary conditions and classify it as fixed. In real life, 
+			there is a high probability that it will happen again. A good procedure to troubleshoot 
+			a hard-to-reproduce problem is to perform general&nbsp; maintenance on the server: reboot, 
+			or bring the machine up to date on drivers and patches.</p>
+			</li>
+
+			<li>
+
+			<p>When did the problem start? Was it gradual or did it occur very quickly? If the performance 
+			issue appeared gradually, then it is likely to be a sizing issue; if it appeared overnight, 
+			then the problem could be caused by a change made to the server or peripherals.</p>
+			</li>
+
+			<li>
+
+			<p>Have any changes been made to the server (minor or major) or are there any changes in 
+			the way clients are using the server? </p>
+			</li>
+
+			<li>
+
+			<p>Did the customer alter something on the server or peripherals to cause the problem?</p>
+			</li>
+
+			<li>
+
+			<p>Is there a log of all network changes available? Demands could change based on business 
+			changes, which could affect demands on a servers and network systems.</p>
+			</li>
+
+			<li>
+
+			<p>Are there any other servers or hardware components involved? Are any logs available?</p>
+			</li>
+
+			<li>
+
+			<p>What is the priority of the problem? When does it have to be fixed?</p>
+			<ul>
+
+				<li>
+
+				<p>– Does it have to be fixed in the next few minutes, or in days? You may have some 
+				time to fix it; or it may already be time to operate in panic mode.</p>
+				</li>
+
+				<li>
+
+				<p>– How massive is the problem?</p>
+				</li>
+
+				<li>
+
+				<p>– What is the related cost of that problem?</p>
+				</li>
+			</ul>
+			</li>
+		</ul>
+		<b>
+
+		<p>4.1.2 Analyzing the server’s performance</p>
+	</blockquote>
+	</b>
+
+	<p>At this point, you should begin monitoring the server. The simplest way is to run monitoring 
+	tools from the server that is being analyzed. (See Chapter 2, “Monitoring tools” on page 15, for 
+	information.)</p>
+
+	<p>A performance log of the server should be created during its peak time of operation (for example, 
+	9:00 a.m. to 5:00 p.m.); it will depend on what services are being provided and on who is using 
+	these services. When creating the log, if available, the following objects should be included:</p>
+	<ul>
+
+		<li>
+
+		<p>Processor</p>
+		</li>
+
+		<li>
+
+		<p>System</p>
+		</li>
+
+		<li>
+
+		<p>Server work queues</p>
+		</li>
+
+		<li>
+
+		<p>Memory</p>
+		</li>
+
+		<li>
+
+		<p>Page file</p>
+		</li>
+
+		<li>
+
+		<p>Physical disk</p>
+		</li>
+
+		<li>
+
+		<p>Redirector</p>
+		</li>
+
+		<li>
+
+		<p>Network interface</p>
+		</li>
+	</ul>
+
+	<p>Before you begin, remember that a methodical approach to performance tuning is important.</p>
+
+	<p>Our recommended process, which you can use for your xSeries server performance tuning process, 
+	is as follows:</p>
+
+	<p>1. Understand the factors affecting server performance. This Redpaper and the redbook <i>Tuning 
+	IBM </i>Eserver <i>xSeries Servers for Performance</i>, SG24-5287 can help.</p>
+
+	<p>2. Measure the current performance to create a performance baseline to compare with your future 
+	measurements and to identify system bottlenecks.</p>
+
+	<p>3. Use the monitoring tools to identify a performance bottleneck. By following the instructions 
+	in the next sections, you should be able to narrow down the bottleneck to the subsystem level.</p>
+
+	<p>4. Work with the component that is causing the bottleneck by performing some actions to improve 
+	server performance in response to demands.</p>
+
+	<p>5. Measure the new performance. This helps you compare performance before and after the tuning 
+	steps.</p>
+
+	<p>When attempting to fix a performance problem, remember the following:</p>
+
+	<p>Take measurements before you upgrade or modify anything so that you can tell whether the change 
+	had any effect. (That is, take baseline measurements.)</p>
+
+	<p>Examine the options that involve reconfiguring existing hardware, not just those that involve 
+	adding new hardware.</p>
+	<b>
+
+	<p>Important: </b>Before taking any troubleshooting actions, back up all data and the configuration 
+	information to prevent a partial or complete loss.</p>
+	<b>
+
+	<p>Note: </b>It is important to understand that the greatest gains are obtained by upgrading a component 
+	that has a bottleneck when the other components in the server have ample “power” left to sustain 
+	an elevated level of performance.</p>
+	<b>
+
+	<p>4.2 CPU bottlenecks</p>
+	</b>
+
+	<p>For servers whose primary role is that of an application or database server, the CPU is a critical 
+	resource and can often be a source of performance bottlenecks. It is important to note that high 
+	CPU utilization does not always mean that a CPU is busy doing work; it may, in fact, be waiting 
+	on another subsystem. When performing proper analysis, it is very important that you look at the 
+	system as a whole and at all subsystems because there may be a cascade effect within the subsystems.</p>
+	<b>
+
+	<p>4.2.1 Finding CPU bottlenecks</p>
+	</b>
+
+	<p>Determining bottlenecks with the CPU can be accomplished in several ways. As discussed in</p>
+
+	<p>Chapter 2, “Monitoring tools” on page 15, Linux has a variety of tools to help determine this;</p>
+
+	<p>the question is: which tools to use?</p>
+
+	<p>One such tool is <b>uptime</b>. By analyzing the output from <b>uptime</b>, we can get a rough 
+	idea of what has been happening in the system for the past 15 minutes. For a more detailed explanation 
+	of this tool, see 2.2, “uptime” on page 16.</p>
+	<i>
+
+	<p>Example 4-1 uptime output from a CPU strapped system</p>
+	</i>
+
+	<p>18:03:16 up 1 day, 2:46, 6 users, load average: 182.53, 92.02, 37.95</p>
+
+	<p>Using KDE System Guard and the CPU sensors lets you view the current CPU workload.</p>
+
+	<p>Using <b>top</b>, you can see both CPU utilization and what processes are the biggest contributors</p>
+
+	<p>to the problem (Example 2-3 on page 18). If you have set up <b>sar</b>, you are collecting a 
+	lot of</p>
+
+	<p>information, some of which is CPU utilization, over a period of time. Analyzing this information</p>
+
+	<p>can be difficult, so use <b>isag</b>, which can use <b>sar </b>output to plot a graph. Otherwise, 
+	you may</p>
+
+	<p>wish to parse the information through a script and use a spreadsheet to plot it to see any</p>
+
+	<p>trends in CPU utilization. You can also use <b>sar </b>from the command line by issuing <b>sar 
+	-u </b>or</p>
+	<b>
+
+	<p>sar -U <i>processornumber</i></b>. To gain a broader perspective of the system and current utilization</p>
+
+	<p>of more than just the CPU subsystem, a good tool is <b>vmstat </b>(2.6, “vmstat” on page 21).</p>
+	<b>
+
+	<p>4.2.2 SMP</p>
+	</b>
+
+	<p>SMP-based systems can present their own set of interesting problems that can be difficult to</p>
+
+	<p>detect. In an SMP environment, there is the concept of <i>CPU affinity</i>, which implies that 
+	you</p>
+
+	<p>bind a process to a CPU.</p>
+
+	<p>The main reason this is useful is CPU cache optimization, which is achieved by keeping the</p>
+
+	<p>same process on one CPU rather than moving between processors. When a process moves</p>
+
+	<p>between CPUs, the cache of the new CPU must be flushed. Therefore, a process that moves</p>
+
+	<p>between processors causes many cache flushes to occur, which means that an individual</p>
+
+	<p>process will take longer to finish. This scenario is very hard to detect because, when</p>
+	<b>
+
+	<p>Note: </b>There is a common misconception that the CPU is the most important part of the</p>
+
+	<p>server. This is not always the case, and servers are often overconfigured with CPU and</p>
+
+	<p>underconfigured with disks, memory, and network subsystems. Only specific applications</p>
+
+	<p>that are truly CPU-intensive can take advantage of today’s high-end processors.</p>
+	<b>
+
+	<p>Tip: </b>Be careful not to add to CPU problems by running too many tools at one time. You</p>
+
+	<p>may find that using a lot of different monitoring tools at one time may be contributing to the</p>
+
+	<p>high CPU load.</p>
+
+	<p>monitoring it, the CPU load will appear to be very balanced and not necessarily peaking on</p>
+
+	<p>any CPU. Affinity is also useful in NUMA-based systems such as the xSeries 445 and xSeries</p>
+
+	<p>455, where it is important to keep memory, cache, and CPU access local to one another.</p>
+	<b>
+
+	<p>4.2.3 Performance tuning options</p>
+	</b>
+
+	<p>The first step is to ensure that the system performance problem is being caused by the CPU</p>
+
+	<p>and not one of the other subsystems. If the processor is the server bottleneck, then a number</p>
+
+	<p>of steps can be taken to improve performance. These include:</p>
+
+	<p>Ensure that no unnecessary programs are running in the background by using <b>ps -ef</b>. If</p>
+
+	<p>you find such programs, stop them and use <b>cron </b>to schedule them to run at off-peak</p>
+
+	<p>hours.</p>
+
+	<p>Identify non-critical, CPU-intensive processes by using <b>top </b>and modify their priority 
+	using</p>
+	<b>
+
+	<p>renice</b>.</p>
+
+	<p>In an SMP-based machine, try using <b>taskset </b>to bind processes to CPUs to make sure that</p>
+
+	<p>processes are not hopping between processors, causing cache flushes.</p>
+
+	<p>Based on the running application, it may be better to scale up (bigger CPUs) than scale</p>
+
+	<p>out (more CPUs). This depends on whether your application was designed to effectively</p>
+
+	<p>take advantage of more processors. For example, a single-threaded application would</p>
+
+	<p>scale better with a faster CPU and not with more CPUs.</p>
+
+	<p>General options include making sure you are using the latest drivers and firmware, as this</p>
+
+	<p>may affect the load they have on the CPU.</p>
+	<b>
+
+	<p>4.3 Memory bottlenecks</p>
+	</b>
+
+	<p>On a Linux system, many programs run at the same time; these programs support multiple</p>
+
+	<p>users and some processes are more used than others. Some of these programs use a</p>
+
+	<p>portion of memory while the rest are “sleeping.” When an application accesses cache, the</p>
+
+	<p>performance increases because an in-memory access retrieves data, thereby eliminating the</p>
+
+	<p>need to access slower disks.</p>
+
+	<p>The OS uses an algorithm to control which programs will use physical memory and which are</p>
+
+	<p>paged out. This is transparent to user programs. Page space is a file created by the OS on a</p>
+
+	<p>disk partition to store user programs that are not currently in use. Typically, page sizes are</p>
+
+	<p>4 KB or 8 KB. In Linux, the page size is defined by using the variable EXEC_PAGESIZE in the</p>
+
+	<p>include/asm-&lt;architecture&gt;/param.h kernel header file. The process used to page a process</p>
+
+	<p>out to disk is called <i>pageout</i>.</p>
+	<b>
+
+	<p>4.3.1 Finding memory bottlenecks</p>
+	</b>
+
+	<p>Start your analysis by listing the applications that are running on the server. Determine how</p>
+
+	<p>much physical memory and swap each application needs to run. Figure 4-1 on page 75</p>
+
+	<p>shows KDE System Guard monitoring memory usage.</p>
+	<i>
+
+	<p>Figure 4-1 KDE System Guard memory monitoring</p>
+	</i>
+
+	<p>The indicators in Table 4-1 can also help you define a problem with memory.</p>
+	<i>
+
+	<p>Table 4-1 Indicator for memory analysis</p>
+	</i><b>
+
+	<p>Paging and swapping indicators</p>
+	</b>
+
+	<p>In Linux, as with all UNIX-based operating systems, there are differences between paging</p>
+
+	<p>and swapping. Paging moves individual pages to swap space on the disk; swapping is a</p>
+
+	<p>bigger operation that moves the entire address space of a process to swap space in one</p>
+
+	<p>operation.</p>
+
+	<p>Swapping can have one of two causes:</p>
+
+	<p>A process enters sleep mode. This usually happens because the process depends on</p>
+
+	<p>interactive action, as editors, shells, and data entry applications spend most of their time</p>
+
+	<p>waiting for user input. During this time, they are inactive.</p>
+	<b>
+
+	<p>Memory indicator Analysis</p>
+	</b>
+
+	<p>Memory available This indicates how much physical memory is available for use. If, after you 
+	start your application,</p>
+
+	<p>this value has decreased significantly, you may have a memory leak. Check the application that</p>
+
+	<p>is causing it and make the necessary adjustments. Use <b>free -l -t -o </b>for additional information.</p>
+
+	<p>Page faults There are two types of page faults: soft page faults, when the page is found in memory, 
+	and hard</p>
+
+	<p>page faults, when the page is not found in memory and must be fetched from disk. Accessing</p>
+
+	<p>the disk will slow your application considerably. The <b>sar -B </b>command can provide useful</p>
+
+	<p>information for analyzing page faults, specifically columns pgpgin/s and pgpgout/s.</p>
+
+	<p>File system cache This is the common memory space used by the file system cache. Use the <b>free 
+	-l -t -o</p>
+	</b>
+
+	<p>command for additional information.</p>
+
+	<p>Private memory for</p>
+
+	<p>process</p>
+
+	<p>This represents the memory used by each process running on the server. You can use the <b>pmap</p>
+	</b>
+
+	<p>command to see how much memory is allocated to a specific process.</p>
+
+	<p>A process behaves poorly. Paging can be a serious performance problem when the</p>
+
+	<p>amount of free memory pages falls below the minimum amount specified, because the</p>
+
+	<p>paging mechanism is not able to handle the requests for physical memory pages and the</p>
+
+	<p>swap mechanism is called to free more pages. This significantly increases I/O to disk and</p>
+
+	<p>will quickly degrade a server’s performance.</p>
+
+	<p>If your server is always paging to disk (a high page-out rate), consider adding more memory.</p>
+
+	<p>However, for systems with a low page-out rate, it may not affect performance.</p>
+	<b>
+
+	<p>4.3.2 Performance tuning options</p>
+	</b>
+
+	<p>It you believe there is a memory bottleneck, consider performing one or more of these</p>
+
+	<p>actions:</p>
+
+	<p>Tune the swap space using bigpages, hugetlb, shared memory.</p>
+
+	<p>Increase or decrease the size of pages.</p>
+
+	<p>Improve the handling of active and inactive memory.</p>
+
+	<p>Adjust the page-out rate.</p>
+
+	<p>Limit the resources used for each user on the server.</p>
+
+	<p>Stop the services that are not needed, as discussed in 3.3, “Daemons” on page 38.</p>
+
+	<p>Add memory.</p>
+	<b>
+
+	<p>4.4 Disk bottlenecks</p>
+	</b>
+
+	<p>The disk subsystem is often the most important aspect of server performance and is usually</p>
+
+	<p>the most common bottleneck. However, problems can be hidden by other factors, such as</p>
+
+	<p>lack of memory. Applications are considered to be I/O-bound when CPU cycles are wasted</p>
+
+	<p>simply waiting for I/O tasks to finish.</p>
+
+	<p>The most common disk bottleneck is having too few disks. Most disk configurations are based</p>
+
+	<p>on capacity requirements, not performance. The least expensive solution is to purchase the</p>
+
+	<p>smallest number of the largest-capacity disks possible. However, this places more user data</p>
+
+	<p>on each disk, causing greater I/O rates to the physical disk and allowing disk bottlenecks to</p>
+
+	<p>occur.</p>
+
+	<p>The second most common problem is having too many logical disks on the same array. This</p>
+
+	<p>increases seek time and greatly lowers performance.</p>
+
+	<p>The disk subsystem is discussed in 3.12, “Tuning the file system” on page 52.</p>
+
+	<p>A recommendation is to apply the diskstats-2.4.patch to fix problems with disk statistics</p>
+
+	<p>counters, which can occasionally report negative values.</p>
+	<b>
+
+	<p>4.4.1 Finding disk bottlenecks</p>
+	</b>
+
+	<p>A server exhibiting the following symptoms may be suffering from a disk bottleneck (or a</p>
+
+	<p>hidden memory problem):</p>
+
+	<p>Slow disks will result in:</p>
+
+	<p>– Memory buffers filling with write data (or waiting for read data), which will delay all</p>
+
+	<p>requests because free memory buffers are unavailable for write requests (or the</p>
+
+	<p>response is waiting for read data in the disk queue)</p>
+
+	<p>– Insufficient memory, as in the case of not enough memory buffers for network requests,</p>
+
+	<p>will cause synchronous disk I/O</p>
+
+	<p>Chapter 4. Analyzing performance bottlenecks <b>77</p>
+	</b>
+
+	<p>Disk utilization, controller utilization, or both will typically be very high.</p>
+
+	<p>Most LAN transfers will happen only after disk I/O has completed, causing very long</p>
+
+	<p>response times and low network utilization.</p>
+
+	<p>Disk I/O can take a relatively long time and disk queues will become full, so the CPUs will</p>
+
+	<p>be idle or have low utilization because they wait long periods of time before processing the</p>
+
+	<p>next request.</p>
+
+	<p>The disk subsystem is perhaps the most challenging subsystem to properly configure.</p>
+
+	<p>Besides looking at raw disk interface speed and disk capacity, it is key to also understand the</p>
+
+	<p>workload: Is disk access random or sequential? Is there large I/O or small I/O? Answering</p>
+
+	<p>these questions provides the necessary information to make sure the disk subsystem is</p>
+
+	<p>adequately tuned.</p>
+
+	<p>Disk manufacturers tend to showcase the upper limits of their drive technology’s throughput.</p>
+
+	<p>However, taking the time to understand the throughput of your workload will help you</p>
+
+	<p>understand what true expectations to have of your underlying disk subsystem.</p>
+	<i>
+
+	<p>Table 4-2 Exercise showing true throughput for 8 KB I/Os for different drive speeds</p>
+	</i>
+
+	<p>Random read/write workloads usually require several disks to scale. The bus bandwidths of</p>
+
+	<p>SCSI or Fibre Channel are of lesser concern. Larger databases with random access</p>
+
+	<p>workload will benefit from having more disks. Larger SMP servers will scale better with more</p>
+
+	<p>disks. Given the I/O profile of 70% reads and 30% writes of the average commercial</p>
+
+	<p>workload, a RAID-10 implementation will perform 50% to 60% better than a RAID-5.</p>
+
+	<p>Sequential workloads tend to stress the bus bandwidth of disk subsystems. Pay special</p>
+
+	<p>attention to the number of SCSI buses and Fibre Channel controllers when maximum</p>
+
+	<p>throughput is desired. Given the same number of drives in an array, RAID-10, RAID-0, and</p>
+
+	<p>RAID-5 all have similar streaming read and write throughput.</p>
+
+	<p>There are two ways to approach disk bottleneck analysis: real-time monitoring and tracing.</p>
+
+	<p>Real-time monitoring must be done while the problem is occurring. This may not be</p>
+
+	<p>practical in cases where system workload is dynamic and the problem is not repeatable.</p>
+
+	<p>However, if the problem is repeatable, this method is flexible because of the ability to add</p>
+
+	<p>objects and counters as the problem becomes well understood.</p>
+
+	<p>Tracing is the collecting of performance data over time to diagnose a problem. This is a</p>
+
+	<p>good way to perform remote performance analysis. Some of the drawbacks include the</p>
+
+	<p>potential for having to analyze large files when performance problems are not repeatable,</p>
+
+	<p>and the potential for not having all key objects and parameters in the trace and having to</p>
+
+	<p>wait for the next time the problem occurs for the additional data.</p>
+	<b>
+
+	<p>Disk speed Latency Seek</p>
+
+	<p>time</p>
+
+	<p>Total random</p>
+
+	<p>access timea</p>
+	</b>
+
+	<p>a. Assuming that the handling of the command + data transfer &lt; 1 ms, total random</p>
+
+	<p>access time = latency + seek time + 1 ms.</p>
+	<b>
+
+	<p>I/Os per</p>
+
+	<p>second</p>
+
+	<p>per diskb</p>
+	</b>
+
+	<p>b. Calculated as 1/total random access time.</p>
+	<b>
+
+	<p>Throughput</p>
+
+	<p>given 8 KB I/O</p>
+	</b>
+
+	<p>15 000 RPM 2.0 ms 3.8 ms 6.8 ms 147 1.15 MBps</p>
+
+	<p>10 000 RPM 3.0 ms 4.9 ms 8.9 ms 112 900 KBps</p>
+
+	<p>7 200 RPM 4.2 ms 9 ms 13.2 ms 75 600 KBps</p>
+	<b>
+
+	<p>vmstat command</p>
+	</b>
+
+	<p>One way to track disk usage on a Linux system is by using the <b>vmstat </b>tool. The columns 
+	of</p>
+
+	<p>interest in <b>vmstat </b>with respect to I/O are the bi and bo fields. These fields monitor 
+	the</p>
+
+	<p>movement of blocks in and out of the disk subsystem. Having a baseline is key to being able</p>
+
+	<p>to identify any changes over time.</p>
+	<i>
+
+	<p>Example 4-2 vmstat output</p>
+	</i>
+
+	<p>[root@x232 root]# vmstat 2</p>
+
+	<p>r b swpd free buff cache si so bi bo in cs us sy id wa</p>
+
+	<p>2 1 0 9004 47196 1141672 0 0 0 950 149 74 87 13 0 0</p>
+
+	<p>0 2 0 9672 47224 1140924 0 0 12 42392 189 65 88 10 0 1</p>
+
+	<p>0 2 0 9276 47224 1141308 0 0 448 0 144 28 0 0 0 100</p>
+
+	<p>0 2 0 9160 47224 1141424 0 0 448 1764 149 66 0 1 0 99</p>
+
+	<p>0 2 0 9272 47224 1141280 0 0 448 60 155 46 0 1 0 99</p>
+
+	<p>0 2 0 9180 47228 1141360 0 0 6208 10730 425 413 0 3 0 97</p>
+
+	<p>1 0 0 9200 47228 1141340 0 0 11200 6 631 737 0 6 0 94</p>
+
+	<p>1 0 0 9756 47228 1140784 0 0 12224 3632 684 763 0 11 0 89</p>
+
+	<p>0 2 0 9448 47228 1141092 0 0 5824 25328 403 373 0 3 0 97</p>
+
+	<p>0 2 0 9740 47228 1140832 0 0 640 0 159 31 0 0 0 100</p>
+	<b>
+
+	<p>iostat command</p>
+	</b>
+
+	<p>Performance problems can be encountered when too many files are opened, being read and</p>
+
+	<p>written to, then closed repeatedly. This could become apparent as seek times (the time it</p>
+
+	<p>takes to move to the exact track where the data is stored) start to increase. Using the <b>iostat</p>
+	</b>
+
+	<p>tool, you can monitor the I/O device loading in real time. Different options enable you to drill</p>
+
+	<p>down even farther to gather the necessary data.</p>
+
+	<p>Example 4-3 shows a potential I/O bottleneck on the device /dev/sdb1. This output shows</p>
+
+	<p>average wait times (await<b>) </b>of about 2.7 seconds and service times <b>(</b>svctm<b>)
+	</b>of 270 ms.</p>
+	<i>
+
+	<p>Example 4-3 Sample of an I/O bottleneck as shown with iostat 2 -x /dev/sdb1</p>
+	</i>
+
+	<p>[root@x232 root]# iostat 2 -x /dev/sdb1</p>
+
+	<p>avg-cpu: %user %nice %sys %idle</p>
+
+	<p>11.50 0.00 2.00 86.50</p>
+
+	<p>Device: rrqm/s wrqm/s r/s w/s rsec/s wsec/s rkB/s wkB/s avgrq-sz</p>
+
+	<p>avgqu-sz await svctm %util</p>
+
+	<p>/dev/sdb1 441.00 3030.00 7.00 30.50 3584.00 24480.00 1792.00 12240.00 748.37</p>
+
+	<p>101.70 2717.33 266.67 100.00</p>
+
+	<p>avg-cpu: %user %nice %sys %idle</p>
+
+	<p>10.50 0.00 1.00 88.50</p>
+
+	<p>Device: rrqm/s wrqm/s r/s w/s rsec/s wsec/s rkB/s wkB/s avgrq-sz</p>
+
+	<p>avgqu-sz await svctm %util</p>
+
+	<p>/dev/sdb1 441.00 3030.00 7.00 30.00 3584.00 24480.00 1792.00 12240.00 758.49</p>
+
+	<p>101.65 2739.19 270.27 100.00</p>
+
+	<p>avg-cpu: %user %nice %sys %idle</p>
+
+	<p>10.95 0.00 1.00 88.06</p>
+
+	<p>Device: rrqm/s wrqm/s r/s w/s rsec/s wsec/s rkB/s wkB/s avgrq-sz</p>
+
+	<p>avgqu-sz await svctm %util</p>
+
+	<p>/dev/sdb1 438.81 3165.67 6.97 30.35 3566.17 25576.12 1783.08 12788.06 781.01</p>
+
+	<p>101.69 2728.00 268.00 100.00</p>
+
+	<p>The <b>iostat -x </b>(for extended statistics) command provides low-level detail of the disk</p>
+
+	<p>subsystem. Some things to point out:</p>
+	<b>
+
+	<p>%util </b>Percentage of CPU consumed by I/O requests</p>
+	<b>
+
+	<p>svctm </b>Average time required to complete a request, in milliseconds</p>
+	<b>
+
+	<p>await </b>Average amount of time an I/O waited to be served, in milliseconds</p>
+	<b>
+
+	<p>avgqu-sz </b>Average queue length</p>
+	<b>
+
+	<p>avgrq-sz </b>Average size of request</p>
+	<b>
+
+	<p>rrqm/s </b>Number of read requests merged per second that were issued to the device</p>
+	<b>
+
+	<p>wrqms </b>Number of write requests merged per second that were issued to the device</p>
+
+	<p>For a more detailed explanation of the fields, see the man page for iostat(1).</p>
+
+	<p>Changes made to the elevator algorithm as described in “Tune the elevator algorithm in kernel</p>
+
+	<p>2.4” on page 55 will be seen in avgrq-sz (average size of request) and avgqu-sz (average</p>
+
+	<p>queue length). As the latencies are lowered by manipulating the elevator settings, avgrq-sz</p>
+
+	<p>will decrease. You can also monitor the rrqm/s and wrqm/s to see the effect on the number of</p>
+
+	<p>merged reads and writes that the disk can manage.</p>
+	<b>
+
+	<p>4.4.2 Performance tuning options</p>
+	</b>
+
+	<p>After verifying that the disk subsystem is a system bottleneck, several solutions are possible.</p>
+
+	<p>These solutions include the following:</p>
+
+	<p>If the workload is of a sequential nature and it is stressing the controller bandwidth, the</p>
+
+	<p>solution is to add a faster disk controller. However, if the workload is more random in</p>
+
+	<p>nature, then the bottleneck is likely to involve the disk drives, and adding more drives will</p>
+
+	<p>improve performance.</p>
+
+	<p>Add more disk drives in a RAID environment. This spreads the data across multiple</p>
+
+	<p>physical disks and improves performance for both reads and writes. This will increase the</p>
+
+	<p>number of I/Os per second. Also, use hardware RAID instead of the software</p>
+
+	<p>implementation provided by Linux. If hardware RAID is being used, the RAID level is</p>
+
+	<p>hidden from the OS.</p>
+
+	<p>Offload processing to another system in the network (users, applications, or services).</p>
+
+	<p>Add more RAM. Adding memory increases system memory disk cache, which in effect</p>
+
+	<p>improves disk response times.</p>
+	<b>
+
+	<p>4.5 Network bottlenecks</p>
+	</b>
+
+	<p>A performance problem in the network subsystem can be the cause of many problems, such</p>
+
+	<p>as a kernel panic. To analyze these anomalies to detect network bottlenecks, each Linux</p>
+
+	<p>distribution includes traffic analyzers.</p>
+	<b>
+
+	<p>4.5.1 Finding network bottlenecks</p>
+	</b>
+
+	<p>We recommend KDE System Guard because of its graphical interface and ease of use. The</p>
+
+	<p>tool, which is available on the distribution CDs, is discussed in detail in 2.10, “KDE System</p>
+
+	<p>Guard” on page 24. Figure 4-2 on page 80 shows it in action.</p>
+	<i>
+
+	<p>Figure 4-2 KDE System Guard network monitoring</p>
+	</i>
+
+	<p>It is important to remember that there are many possible reasons for these performance</p>
+
+	<p>problems and that sometimes problems occur simultaneously, making it even more difficult to</p>
+
+	<p>pinpoint the origin. The indicators in Table 4-3 can help you determine the problem with your</p>
+
+	<p>network.</p>
+	<i>
+
+	<p>Table 4-3 Indicators for network analysis</p>
+	</i><b>
+
+	<p>Network indicator Analysis</p>
+	</b>
+
+	<p>Packets received</p>
+
+	<p>Packets sent</p>
+
+	<p>Shows the number of packets that are coming in and going out of the</p>
+
+	<p>specified network interface. Check both internal and external interfaces.</p>
+
+	<p>Collision packets Collisions occur when there are many systems on the same domain. The</p>
+
+	<p>use of a hub may be the cause of many collisions.</p>
+
+	<p>Dropped packets Packets may be dropped for a variety of reasons, but the result may affect</p>
+
+	<p>performance. For example, if the server network interface is configured to</p>
+
+	<p>run at 100 Mbps full duplex, but the network switch is configured to run at</p>
+
+	<p>10 Mbps, the router may have an ACL filter that drops these packets. For</p>
+
+	<p>example:</p>
+
+	<p>iptables -t filter -A FORWARD -p all -i eth2 -o eth1 -s 172.18.0.0/24</p>
+
+	<p>-j DROP</p>
+
+	<p>Errors Errors occur if the communications lines (for instance, the phone line) are of</p>
+
+	<p>poor quality. In these situations, corrupted packets must be resent, thereby</p>
+
+	<p>decreasing network throughput.</p>
+
+	<p>Faulty adapters Network slowdowns often result from faulty network adapters. When this</p>
+
+	<p>kind of hardware fails, it may begin to broadcast junk packets on the network.</p>
+	<b>
+
+	<p>4.5.2 Performance tuning options</p>
+	</b>
+
+	<p>These steps illustrate what you should do to solve problems related to network bottlenecks:</p>
+
+	<p>Ensure that the network card configuration matches router and switch configurations (for</p>
+
+	<p>example, frame size).</p>
+
+	<p>Modify how your subnets are organized.</p>
+
+	<p>Use faster network cards.</p>
+
+	<p>Tune the appropriate IPV4 TCP kernel parameters. (See Chapter 3, “Tuning the operating</p>
+
+	<p>system” on page 35.) Some security-related parameters can also improve performance,</p>
+
+	<p>as described in that chapter.</p>
+
+	<p>If possible, change network cards and recheck performance.</p>
+
+	<p>Add network cards and bind them together to form an adapter team, if possible.</p>
+
+	<p>&nbsp;</p>
+</blockquote>
+
+<p>&nbsp;</p>
+<hr>
+<table border="1" width="100%"><tr><td width="100%" align="center"  colspan="2">
+<center><b>Top updates</b></center>
+<center>
+<script type="text/javascript">
+<!--google_ad_client = "ca-pub-4031247137266443";
+/* 728x15, created 8/7/09 */
+google_ad_slot = "5138458259";
+google_ad_width = 728;
+google_ad_height = 15;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</center>
+<iframe src="/topupdates.shtml" width="100%" height="300"><p>Your browser does not support iframes.</p>
+</iframe>
+<hr>
+</td><tr><td width="29%" align="center" bgcolor="#C0C0C0">
+<a href="switchboard.shtml">Softpanorama Switchboard</a></td><td width="69%" bgcolor="#C0C0C0">
+<center><b>Google Search</b></center>
+<center><form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+<input type="hidden" name="cx" value="partner-pub-4031247137266443:gc7406rpojx" />
+<input type="hidden" name="ie" value="ISO-8859-1" />
+<input type="text" name="q1" size="60" />
+<input type="submit" name="sa" value="Search" />
+</form></center>
+</tr>
+</table>
+</td></tr></table>
+<hr noshade color="#FF0000" size="5">
+
+
+
+
+<hr>
+
+<h2><a name="NEWS_TOC">NEWS CONTENTS</a></h2>
+<ul>
+<li><a href="#n_how_to_troubleshoot_linux_performance_bottlenecks"> How to troubleshoot Linux performance bottlenecks</a>
+<li><a href="#n_linux_com_inspecting_disk_io_performance__with_fio">Linux.com Inspecting disk IO performance  with fio</a>
+<li><a href="#n_simulating_servers">Simulating servers</a>
+<li><a href="#n2000_00_>"># --> </a>
+<li><a href="#n2000_00_>"># --> </a>
+<li><a href="#n2000_00_>"># --> </a>
+<li><a href="#n2000_00_>"># --> </a>
+<li><a href="#n2000_00_http_collectl_sourceforge_net_examples_html">http://collectl.sourceforge.net/Examples.html</a>
+<li><a href="#n2000_00_re_inspecting_disk_io_performance_with_fio">Re: Inspecting disk IO performance with fio </a>
+<li><a href="#n2008_0409_linux_com_inspecting__disk_io_performance_with_fio">Linux.com Inspecting  disk IO performance with fio</a>
+<li><a href="#n2008_0409_simulating_servers">Simulating servers</a>
+</ul>
+<h2><a name="News">Old News</a> ;-) </h2>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#NEWS_TOC"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n_how_to_troubleshoot_linux_performance_bottlenecks" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n_linux_com_inspecting_disk_io_performance__with_fio"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>
+<a rel="nofollow" href="http://searchenterpriselinux.techtarget.com/tip/0,289483,sid39_gci1332851,00.html#">
+How to troubleshoot Linux performance bottlenecks</a></h4>
+<blockquote>
+
+	<p>ken milberg<br>
+	09.30.2008<br>
+	<br>
+	You&#39;ve just had your first cup of coffee and have received that dreaded phone call. The system is 
+	slow. What are you going to do? This article will discuss performance bottlenecks and optimization 
+	in Red Hat Enterprise Linux (RHEL5). </p>
+
+	<p>Before getting into any monitoring or tuning specifics, you should always use some kind of tuning 
+	methodology. This is one which I&#39;ve used successfully through the years: </p>
+
+	<p>1. Baseline – The first thing you must do is establish a baseline, which is a snapshot of how 
+	the system appears when it&#39;s performing well. This baseline should not only compile data, but also 
+	document your system&#39;s configuration (RAM, CPU and I/O). This is necessary because you need to know 
+	what a well-performing system looks like prior to fixing it. <br>
+	2. Stress testing and monitoring – This is the part where you monitor and stress your systems at 
+	peak workloads. It&#39;s the monitoring which is key here – as you cannot effectively tune anything 
+	without some historic trending data.<br>
+&nbsp;</p>
+
+	<p>3. Bottleneck identification – This is where you come up with the diagnosis for what is ailing 
+	your system. The primary objective of section 2 is to determine the bottleneck. I like to use several 
+	monitoring tools here. This allows me to cross-reference my data for accuracy. <br>
+&nbsp;</p>
+
+	<p>4. Tune – Only after you&#39;ve identified the bottleneck can you tune it.<br>
+&nbsp;</p>
+
+	<p>5. Repeat – Once you&#39;ve tuned it, you can start the cycle again – but this time start from step 
+	2 (monitoring) – as you already have your baseline.<br>
+&nbsp;</p>
+
+	<p>It&#39;s important to note that you should only make one change at a time. Otherwise, you&#39;ll never 
+	know exactly what impacted any changes which might have occurred. It is only by repeating your tests 
+	and consistently monitoring your systems that you can determine if your tuning is making an impact.</p>
+	<b>RHEL monitoring tools </b><br>
+	Before we can begin to improve the performance of our system, we need to use the monitoring tools 
+	available to us to baseline. Here are some monitoring tools you should consider using:
+
+	<p>&nbsp;</p>
+	<a target="_blank" href="http://oprofile.sourceforge.net/about/">Oprofile</a><br>
+	This tool (made available in RHEL5) utilizes the processor to retrieve kernel system information 
+	about system executables. It allows one to collect samples of performance data every time a counter 
+	detects an interrupt. I like the tool also because it carries little overhead – which is very important 
+	because you don&#39;t want monitoring tools to be causing system bottlenecks. One important limitation 
+	is that the tool is very much geared towards finding problems with CPU limited processes. It does 
+	not identify processes which are sleeping or waiting on I/O.
+
+	<p>&nbsp;</p>
+
+	<p>The steps used to start up Oprofile include setting up the profiler, starting it and then dumping 
+	the data.</p>
+
+	<p>First we&#39;ll set up the profile. This option assumes that one wants to monitor the kernel. </p>
+	<code># opcontrol --setup –vmlinux=/usr/lib/debug/lib/modules/&#39;uname -r&#39;/vmlinux</code>
+
+	<p>Then we can start it up.</p>
+	<code># opcontrol --start</code>
+
+	<p>Finally, we&#39;ll dump the data.</p>
+	<code># opcontrol --stop/--shutdown/--dump</code>
+
+	<p><a target="_blank" href="http://sourceware.org/systemtap/index.html">SystemTap</a><br>
+	This tool (introduced in RHEL5) collects data by analyzing the running kernel. It really helps one 
+	come up with a correct diagnosis of a performance problem and is tailor-made for developers. SystemTap 
+	eliminates the need for the developer to go through the recompile and reinstallation process to 
+	collect data.</p>
+	<a target="_blank" href="http://sourceware.org/frysk/">Frysk</a><br>
+	This is another tool which was introduced by Red Hat in RHEL5. What does it do for you? It allows 
+	both developers and system administrators to monitor running processes and threads. Frysk differs 
+	from Oprofile in that it uses 100% reliable information (similar to SystemTap) - not just a sampling 
+	of data. It also runs in user mode and does not require kernel modules or elevated privileges. Allowing 
+	one to stop or start running threads or processes is also a very useful feature.
+
+	<p>&nbsp;</p>
+	Some more general Linux tools include
+	<a target="_blank" href="http://www.linuxforums.org/misc/using_top_more_efficiently.html">top</a> 
+	and <a target="_blank" href="http://linuxcommand.org/man_pages/vmstat8.html">vmstat</a>. While these 
+	are considered more basic, often I find them much more useful than more complex tools. Certainly 
+	they are easier to use and can help provide information in a much quicker fashion.
+
+	<p><b>Top</b> provides a quick snapshot of what is going on in your system – in a friendly character-based 
+	display.&nbsp; </p>
+
+	<p>It also provides information on CPU, Memory and Swap Space.</p>
+	Let&#39;s look at <b>vmstat</b> – one of the oldest but more important Unix/Linux tools ever created. 
+	Vmstat allows one to get a valuable snapshot of process, memory, sway I/O and overall CPU utilization.
+
+	<p>&nbsp;</p>
+&nbsp;<p>Now let&#39;s define some of the fields:</p>
+	<i>Memory<br>
+	swpd – The amount of virtual memory<br>
+	free – The amount of free memory<br>
+	buff – Amount of memory used for buffers<br>
+	cache – Amount of memory used as page cache</i>
+
+	<p><i>Process<br>
+	r – number of run-able processes<br>
+	b – number or processes sleeping. </i>Make sure this number does not exceed the amount of run-able 
+	processes, because when this condition occurs it usually signifies that there are performance problems.</p>
+
+	<p><i>Swap</i><br>
+	<i>si – the amount of memory swapped in from disk<br>
+	so – the amount of memory swapped out.</i><br>
+	This is another important field you should be monitoring – if you are swapping out data, you will 
+	likely be having performance problems with virtual memory.</p>
+	<i>CPU</i><br>
+	<i>us – The % of time spent in user-level code.</i> <br>
+	It is preferable for you to have processes which spend more time in user code rather than system 
+	code. Time spent in system level code usually means that the process is tied up in the kernel rather 
+	than processing real data. <br>
+	<i>sy – the time spent in system level code<br>
+	id – the amount of time the CPU is idle wa – The amount of time the system is spending waiting for 
+	I/O.</i>
+
+	<p>&nbsp;</p>
+	If your system is waiting on I/O – everything tends to come to a halt. I start to get worried when 
+	this is &gt; 10.
+
+	<p>&nbsp;</p>
+	There is also:
+
+	<p>&nbsp;</p>
+	<i>Free – This tool provides memory information, giving you data around the total amount of free 
+	and used physical and swap memory.</i><br>
+&nbsp;<p>Now that we&#39;ve analyzed our systems – lets look at what we can do to optimize and tune our 
+	systems.</p>
+	<b>CPU Overhead – Shutting Running Processes </b><br>
+	Linux starts up all sorts of processes which are usually not required. This includes processes such 
+	as autofs, cups, xfs, nfslock and sendmail. As a general rule, shut down anything that isn&#39;t explicitly 
+	required. How do you do this? The best method is to use the chkconfig command.
+
+	<p>&nbsp;</p>
+
+	<p>Here&#39;s how we can shut these processes down. <br>
+	<code>[root ((Content component not found.)) _29_140_234 ~]# chkconfig --del xfs</code> </p>
+
+	<p>You can also use the GUI - /usr/bin/system-config-services to shut down daemon process.</p>
+	<b>Tuning the kernel </b><br>
+	To tune your kernel for optimal performance, start with:
+
+	<p><i>sysctl</i> – This is the command we use for changing kernel parameters. The parameters themselves 
+	are found in /proc/sys/kernel</p>
+
+	<p>Let&#39;s change some of the parameters. We&#39;ll start with the <b>msgmax</b> parameter. This parameter 
+	specifies the maximum allowable size of a single message in an IPC message queue. Let&#39;s view how 
+	it currently looks.</p>
+	<code>[root ((Content component not found.)) _29_139_52 ~]# sysctl kernel.msgmax<br>
+	kernel.msgmax = 65536<br>
+	[root ((Content component not found.)) _29_139_52 ~]#</code>
+
+	<p>There are three ways to make these kinds of kernel changes. One way is to change this using the 
+	echo command.</p>
+	<code>[root ((Content component not found.)) _29_139_52 ~]# echo 131072 &gt;/proc/sys/kernel/msgmax<br>
+	[root ((Content component not found.)) _29_139_52 ~]# sysctl kernel.msgmax<br>
+	kernel.msgmax = 131072<br>
+	[root ((Content component not found.)) _29_139_52 ~]#</code>
+
+	<p>Another parameter that is changed quite frequently is <b>SHMMAX</b>, which is used to define 
+	the maximum size (in bytes) for a shared memory segment. In Oracle this should be set large enough 
+	for the largest SGA size. Let&#39;s look at the default parameter:</p>
+	<code># sysctl kernel.shmmax<br>
+	kernel.shmmax = 268435456</code>
+
+	<p>This is in bytes – which translates to 256 MG. Let&#39;s change this to 512 MG, using the -w flag.</p>
+	<code>[root ((Content component not found.)) _29_139_52 ~]# sysctl -w kernel.shmmax=5368709132<br>
+	kernel.shmmax = 5368709132<br>
+	[root ((Content component not found.)) _29_139_52 ~]#</code>
+
+	<p>The final method for making changes is to use a text editor such as <b>vi</b> – directly editing 
+	the /etc/sysctl.conf file to manually make our changes. </p>
+
+	<p>To allow the parameter to take affect dynamically without a reboot, issue the sysctl command 
+	with the -p parameter. </p>
+
+	<p>Obviously, there is more to performance tuning and optimization than we can discuss in the context 
+	of this small article – entire books have been written on Linux performance tuning. For those of 
+	you first getting your hands dirty with tuning, I suggest you tread lightly and spend time working 
+	on development, test and/or sandbox environments prior to deploying any changes into production. 
+	Ensure that you monitor the effects of any changes that you make immediately; it&#39;s imperative to 
+	know the effect of your change. Be prepared for the possibility that fixing your bottleneck has 
+	created another one. This is actually not a bad thing in itself, as long as your overall performance 
+	has improved and you understand fully what is happening.</p>
+	Performance monitoring and tuning is a dynamic process which does not stop after you have fixed 
+	a problem. All you&#39;ve done is established a new baseline. Don&#39;t rest on your laurels, and understand 
+	that performance monitoring must be a routine part of your role as a systems administrator.
+
+	<p>&nbsp;</p>
+	<i><b>About the author:</b> Ken Milberg is a systems consultant with two decades of experience working 
+	with Unix and Linux systems. He is a SearchEnterpriseLinux.com Ask the Experts advisor and columnist.</i>
+</blockquote>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n_how_to_troubleshoot_linux_performance_bottlenecks"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n_linux_com_inspecting_disk_io_performance__with_fio" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n_simulating_servers"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4><a rel="nofollow" href="http://www.linux.com/feature/131063">Linux.com Inspecting disk IO performance 
+with fio</a></h4>
+<blockquote>
+	Storage performance has failed to keep up with that of other major components of computer systems. 
+	Hard disks have gotten larger, but their speed has not kept pace with the relative speed improvements 
+	in RAM and CPU technology. The potential for your hard drive to be your system&#39;s performance bottleneck 
+	makes knowing how fast your disks and filesystems are and getting quantitative measurements on any 
+	improvements you can make to the disk subsystem important. One way to make disk access faster is 
+	to use more disks in combination, as in a
+	<a rel="nofollow" href="http://www.pcguide.com/ref/hdd/perf/raid/levels/singleLevel5-c.html">RAID-5</a> 
+	configuration.<p>To get a basic idea of how fast a physical disk can be accessed from Linux you 
+	can use the <a rel="nofollow" href="http://sourceforge.net/projects/hdparm/">hdparm</a> tool with 
+	the <code>-T</code> and <code>-t</code> options. The <code>-T</code> option takes advantage of the 
+	Linux disk cache and gives an indication of how much information the system could read from a disk 
+	if the disk were fast enough to keep up. The <code>-t</code> option also reads the disk through 
+	the cache, but without any precaching of results. Thus <code>-t</code> can give an idea of how fast 
+	a disk can deliver information stored sequentially on disk.</p>
+
+	<p>The hdparm tool isn&#39;t the best indicator of real-world performance. It operates at a very low 
+	level; once you place a filesystem onto a disk partition you might get significantly different results. 
+	You will also see large differences in speed between sequential access and random access. It would 
+	also be good to be able to benchmark a filesystem stored on a group of disks in a RAID configuration.</p>
+
+	<p><a rel="nofollow" href="http://freshmeat.net/projects/fio/">fio</a> was created to allow benchmarking 
+	specific disk IO workloads. It can issue its IO requests using one of many synchronous and asynchronous 
+	IO APIs, and can also use various APIs which allow many IO requests to be issued with a single API 
+	call. You can also tune how large the files fio uses are, at what offsets in those files IO is to 
+	happen at, how much delay if any there is between issuing IO requests, and what if any filesystem 
+	sync calls are issued between each IO request. A sync call tells the operating system to make sure 
+	that any information that is cached in memory has been saved to disk and can thus introduce a significant 
+	delay. The options to fio allow you to issue very precisely defined IO patterns and see how long 
+	it takes your disk subsystem to complete these tasks.</p>
+
+	<p>fio is packaged in the standard repository for Fedora 8 and is available for openSUSE through 
+	the <a rel="nofollow" href="http://software.opensuse.org/search">openSUSE Build Service</a>. Users 
+	of Debian-based distributions will have to compile from source with the <code>make; sudo make install</code> 
+	combination. </p>
+
+	<p>The first test you might like to perform is for random read IO performance. This is one of the 
+	nastiest IO loads that can be issued to a disk, because it causes the disk head to seek a lot, and 
+	disk head seeks are extremely slow operations relative to other hard disk operations. One area where 
+	random disk seeks can be issued in real applications is during application startup, when files are 
+	requested from all over the hard disk. You specify fio benchmarks using configuration files with 
+	an ini file format. You need only a few parameters to get started. <code>rw=randread</code> tells 
+	fio to use a random reading access pattern, <code>size=128m</code> specifies that it should transfer 
+	a total of 128 megabytes of data before calling the test complete, and the <code>directory</code> 
+	parameter explicitly tells fio what filesystem to use for the IO benchmark. On my test machine, 
+	the /tmp filesystem is an ext3 filesystem stored on a RAID-5 array consisting of three 500GB Samsung 
+	SATA disks. If you don&#39;t specify <code>directory</code>, fio uses the current directory that the 
+	shell is in, which might not be what you want. The configuration file and invocation is shown below.</p>
+	$ cat random-read-test.fio ; random read of 128mb of data [random-read] rw=randread size=128m directory=/tmp/fio-testing/data 
+	$ fio random-read-test.fio random-read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=sync, iodepth=1 
+	Starting 1 process random-read: Laying out IO file(s) (1 file(s) / 128MiB) Jobs: 1 (f=1): [r] [100.0% 
+	done] [ 3588/ 0 kb/s] [eta 00m:00s] random-read: (groupid=0, jobs=1): err= 0: pid=30598 read : io=128MiB, 
+	bw=864KiB/s, iops=211, runt=155282msec clat (usec): min=139, max=148K, avg=4736.28, stdev=6001.02 
+	bw (KiB/s) : min= 227, max= 5275, per=100.12%, avg=865.00, stdev=362.99 cpu : usr=0.07%, sys=1.27%, 
+	ctx=32783, majf=0, minf=10 IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% 
+	issued r/w: total=32768/0, short=0/0 lat (usec): 250=34.92%, 500=0.36%, 750=0.02%, 1000=0.05% lat 
+	(msec): 2=0.41%, 4=12.80%, 10=44.96%, 20=5.16%, 50=0.94% lat (msec): 100=0.37%, 250=0.01% Run status 
+	group 0 (all jobs): READ: io=128MiB, aggrb=864KiB/s, minb=864KiB/s, maxb=864KiB/s, mint=155282msec, 
+	maxt=155282msec Disk stats (read/write): dm-6: ios=32768/148, merge=0/0, ticks=154728/12490, in_queue=167218, 
+	util=99.59%
+
+	<p>fio produces many figures in this test. Overall, higher values for bandwidth and lower values 
+	for latency constitute better results.</p>
+
+	<p>The bw result shows the average bandwidth achieved by the test. The clat and bw lines show information 
+	about the completion latency and bandwidth respectively. The completion latency is the time between 
+	submitting a request and it being completed. The min, max, average, and standard deviation for the 
+	latency and bandwidth are shown. In this case, the standard deviation for both completion latency 
+	and bandwidth is quite large relative to the average value, so some IO requests were served much 
+	faster than others. The CPU line shows you how much impact the IO load had on the CPU, so you can 
+	tell if the processor in the machine is too slow for the IO you want to perform. The IO depths section 
+	is more interesting when you are testing an IO workload where multiple requests for IO can be outstanding 
+	at any point in time as is done in the next example. Because the above test only allowed a single 
+	IO request to be issued at any time, the IO depths were at 1 for 100% of the time. The latency figures 
+	indented under the IO depths section show an overview of how long each IO request took to complete; 
+	for these results, almost half the requests took between 4 and 10 milliseconds between when the 
+	IO request was issued and when the result of that request was reported. The latencies are reported 
+	as intervals, so the <code>4=12.80%, 10=44.96%</code> section reports that 44.96% of requests took 
+	more than 4 (the previous reported value) and up to 10 milliseconds to complete.</p>
+
+	<p>The large READ line third from last shows the average, min, and max bandwidth for each execution 
+	thread or process. fio lets you define many threads or processes to all submit work at the same 
+	time during a benchmark, so you can have many threads, each using synchronous APIs to perform IO, 
+	and benchmark the result of all these threads running at once. This lets you test IO workloads that 
+	are closer to many server applications, where a new thread or process is spawned to handle each 
+	connecting client. In this case we have only one thread. As the READ line near the bottom of output 
+	shows, the single thread has an 864Kbps aggregate bandwidth (aggrb) which tells you that either 
+	the disk is slow or the manner in which IO is submitted to the disk system is not friendly, causing 
+	the disk head to perform many expensive seeks and thus producing a lower overall IO bandwidth. If 
+	you are submitting IO to the disk in a friendly way you should be getting much closer to the speeds 
+	that hdparm reports (typically around 40-60Mbps).</p>
+
+	<p>I performed the same test again, this time using the Linux asynchronous IO subsystem in direct 
+	IO mode with the possibility, based on the <code>iodepth</code> parameter, of eight requests for 
+	asynchronous IO being issued and not fulfilled because the system had to wait for disk IO at any 
+	point in time. The choice of allowing up to only eight IO requests in the queue was arbitrary, but 
+	typically an application will limit the number of outstanding requests so the system does not become 
+	bogged down. In this test, the benchmark reported almost three times the bandwidth. The abridged 
+	results are shown below. The IO depths show how many asynchronous IO requests were issued but had 
+	not returned data to the application during the course of execution. The figures are reported for 
+	intervals from the previous figure; for example, <code>the 8=96.0%</code> tells you that 96% of 
+	the time there were five, six, seven, or eight requests in the async IO queue, while, based on
+	<code>4=4.0%</code>, 4% of the time there were only three or four requests in the queue.</p>
+	$ cat random-read-test-aio.fio ; same as random-read-test.fio ; ... ioengine=libaio iodepth=8 direct=1 
+	invalidate=1 $ fio random-read-test-aio.fio random-read: (groupid=0, jobs=1): err= 0: pid=31318 
+	read : io=128MiB, bw=2,352KiB/s, iops=574, runt= 57061msec slat (usec): min=8, max=260, avg=25.90, 
+	stdev=23.23 clat (usec): min=1, max=124K, avg=13901.91, stdev=12193.87 bw (KiB/s) : min= 0, max= 
+	5603, per=97.59%, avg=2295.43, stdev=590.60 ... IO depths : 1=0.1%, 2=0.1%, 4=4.0%, 8=96.0%, 16=0.0%, 
+	32=0.0%, &gt;=64=0.0% ... Run status group 0 (all jobs): READ: io=128MiB, aggrb=2,352KiB/s, minb=2,352KiB/s, 
+	maxb=2,352KiB/s, mint=57061msec, maxt=57061msec
+
+	<pre> </pre>
+
+	<p>Random reads are always going to be limited by the seek time of the disk head. Because the async 
+	IO test could issue as many as eight IO requests before waiting for any to complete, there was more 
+	chance for reads in the same disk area to be completed together, and thus an overall boost in IO 
+	bandwidth.</p>
+
+	<p>The HOWTO file from the fio distribution gives full details of the options you can use to specify 
+	benchmark workloads. One of the more interesting parameters is <code>rw</code>, which can specify 
+	sequential or random reads and or writes in many combinations. The <code>ioengine</code> parameter 
+	can select how the IO requests are issued to the kernel. The <code>invalidate</code> option causes 
+	the kernel buffer and page cache to be invalidated for a file before beginning the benchmark. The
+	<code>runtime</code> specifies that a test should run for a given amount of time and then be considered 
+	complete. The <code>thinktime</code> parameter inserts a specified delay between IO requests, which 
+	is useful for simulating a real application that would normally perform some work on data that is 
+	being read from disk. <code>fsync=<i>n</i></code> can be used to issue a sync call after every
+	<i>n</i> writes issued. <code>write_iolog</code> and <code>read_iolog</code> cause fio to write 
+	or read a log of all the IO requests issued. With these commands you can capture a log of the exact 
+	IO commands issued, edit that log to give exactly the IO workload you want, and benchmark those 
+	exact IO requests. The iolog options are great for importing an IO access pattern from an existing 
+	application for use with fio.</p>
+
+	<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n_linux_com_inspecting_disk_io_performance__with_fio"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n_simulating_servers" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Simulating servers</h4>
+
+	<p>You can also specify multiple threads or processes to all submit IO work at the same time to 
+	benchmark server-like filesystem interaction. In the following example I have four different processes, 
+	each issuing their own IO loads to the system, all running at the same time. I&#39;ve based the example 
+	on having two memory-mapped query engines, a background updater thread, and a background writer 
+	thread. The difference between the two writing threads is that the writer thread is to simulate 
+	writing a journal, whereas the background updater must read and write (update) data. bgupdater has 
+	a thinktime of 40 microseconds, causing the process to sleep for a little while after each completed 
+	IO.</p>
+	$ cat four-threads-randio.fio ; Four threads, two query, two writers. [global] rw=randread size=256m 
+	directory=/tmp/fio-testing/data ioengine=libaio iodepth=4 invalidate=1 direct=1 [bgwriter] rw=randwrite 
+	iodepth=32 [queryA] iodepth=1 ioengine=mmap direct=0 thinktime=3 [queryB] iodepth=1 ioengine=mmap 
+	direct=0 thinktime=5 [bgupdater] rw=randrw iodepth=16 thinktime=40 size=32m $ fio four-threads-randio.fio 
+	bgwriter: (g=0): rw=randwrite, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=32 queryA: (g=0): rw=randread, 
+	bs=4K-4K/4K-4K, ioengine=mmap, iodepth=1 queryB: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=mmap, 
+	iodepth=1 bgupdater: (g=0): rw=randrw, bs=4K-4K/4K-4K, ioengine=libaio, iodepth=16 Starting 4 processes 
+	bgwriter: (groupid=0, jobs=1): err= 0: pid=3241 write: io=256MiB, bw=7,480KiB/s, iops=1,826, runt= 
+	35886msec slat (usec): min=9, max=106K, avg=35.29, stdev=583.45 clat (usec): min=117, max=224K, 
+	avg=17365.99, stdev=24002.00 bw (KiB/s) : min= 0, max=14636, per=72.30%, avg=5746.62, stdev=5225.44 
+	cpu : usr=0.40%, sys=4.13%, ctx=18254, majf=0, minf=9 IO depths : 1=0.1%, 2=0.1%, 4=0.4%, 8=3.3%, 
+	16=59.7%, 32=36.5%, &gt;=64=0.0% issued r/w: total=0/65536, short=0/0 lat (usec): 250=0.05%, 500=0.33%, 
+	750=0.70%, 1000=1.11% lat (msec): 2=7.06%, 4=14.91%, 10=27.10%, 20=21.82%, 50=20.32% lat (msec): 
+	100=4.74%, 250=1.86% queryA: (groupid=0, jobs=1): err= 0: pid=3242 read : io=256MiB, bw=589MiB/s, 
+	iops=147K, runt= 445msec clat (usec): min=2, max=165, avg= 3.48, stdev= 2.38 cpu : usr=70.05%, sys=30.41%, 
+	ctx=91, majf=0, minf=65545 IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% 
+	issued r/w: total=65536/0, short=0/0 lat (usec): 4=76.20%, 10=22.51%, 20=1.17%, 50=0.05%, 100=0.05% 
+	lat (usec): 250=0.01% queryB: (groupid=0, jobs=1): err= 0: pid=3243 read : io=256MiB, bw=455MiB/s, 
+	iops=114K, runt= 576msec clat (usec): min=2, max=303, avg= 3.48, stdev= 2.31 bw (KiB/s) : min=464158, 
+	max=464158, per=1383.48%, avg=464158.00, stdev= 0.00 cpu : usr=73.22%, sys=26.43%, ctx=69, majf=0, 
+	minf=65545 IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% issued r/w: 
+	total=65536/0, short=0/0 lat (usec): 4=76.81%, 10=21.61%, 20=1.53%, 50=0.02%, 100=0.03% lat (usec): 
+	250=0.01%, 500=0.01% bgupdater: (groupid=0, jobs=1): err= 0: pid=3244 read : io=16,348KiB, bw=1,014KiB/s, 
+	iops=247, runt= 16501msec slat (usec): min=7, max=42,515, avg=47.01, stdev=665.19 clat (usec): min=1, 
+	max=137K, avg=14215.23, stdev=20611.53 bw (KiB/s) : min= 0, max= 1957, per=2.37%, avg=794.90, stdev=495.94 
+	write: io=16,420KiB, bw=1,018KiB/s, iops=248, runt= 16501msec slat (usec): min=9, max=42,510, avg=38.73, 
+	stdev=663.37 clat (usec): min=202, max=229K, avg=49803.02, stdev=34393.32 bw (KiB/s) : min= 0, max= 
+	1840, per=10.89%, avg=865.54, stdev=411.66 cpu : usr=0.53%, sys=1.39%, ctx=12089, majf=0, minf=9 
+	IO depths : 1=0.1%, 2=0.1%, 4=0.3%, 8=22.8%, 16=76.8%, 32=0.0%, &gt;=64=0.0% issued r/w: total=4087/4105, 
+	short=0/0 lat (usec): 2=0.02%, 4=0.04%, 20=0.01%, 50=0.06%, 100=1.44% lat (usec): 250=8.81%, 500=4.24%, 
+	750=2.56%, 1000=1.17% lat (msec): 2=2.36%, 4=2.62%, 10=9.47%, 20=13.57%, 50=29.82% lat (msec): 100=19.07%, 
+	250=4.72% Run status group 0 (all jobs): READ: io=528MiB, aggrb=33,550KiB/s, minb=1,014KiB/s, maxb=589MiB/s, 
+	mint=445msec, maxt=16501msec WRITE: io=272MiB, aggrb=7,948KiB/s, minb=1,018KiB/s, maxb=7,480KiB/s, 
+	mint=16501msec, maxt=35886msec Disk stats (read/write): dm-6: ios=4087/69722, merge=0/0, ticks=58049/1345695, 
+	in_queue=1403777, util=99.74%
+
+	<p>As one would expect, the bandwidth the array achieved in the query and writer processes was vastly 
+	different. Queries are performed at about 500Mbps while writing comes in at 1Mbps or 7.5Mbps depending 
+	on whether it is read/write or purely write performance respectively. The IO depths show the number 
+	of pending IO requests that are queued when an IO request is issued. For example, for the bgupdater 
+	process, nearly 1/4 of the async IO requests are being fulfilled with eight or less requests in 
+	the queue of a potential 16. In contrast, the bgwriter has more than half of its requests performed 
+	with 16 or less pending requests in the queue.</p>
+
+	<p>To contrast with the three-disk RAID-5 configuration, I reran the four-threads-randio.fio test 
+	on a single Western Digital 750GB drive. The bgupdater process achieved less than half the bandwidth 
+	and each of the query processes ran at 1/3 the overall bandwidth. For this test the Western Digital 
+	drive was on a different computer with different CPU and RAM specifications as well, so any comparison 
+	should be taken with a grain of salt.</p>
+	bgwriter: (groupid=0, jobs=1): err= 0: pid=14963 write: io=256MiB, bw=6,545KiB/s, iops=1,597, runt= 
+	41013msec queryA: (groupid=0, jobs=1): err= 0: pid=14964 read : io=256MiB, bw=160MiB/s, iops=39,888, 
+	runt= 1643msec queryB: (groupid=0, jobs=1): err= 0: pid=14965 read : io=256MiB, bw=163MiB/s, iops=40,680, 
+	runt= 1611msec bgupdater: (groupid=0, jobs=1): err= 0: pid=14966 read : io=16,416KiB, bw=422KiB/s, 
+	iops=103, runt= 39788msec write: io=16,352KiB, bw=420KiB/s, iops=102, runt= 39788msec READ: io=528MiB, 
+	aggrb=13,915KiB/s, minb=422KiB/s, maxb=163MiB/s, mint=1611msec, maxt=39788msec WRITE: io=272MiB, 
+	aggrb=6,953KiB/s, minb=420KiB/s, maxb=6,545KiB/s, mint=39788msec, maxt=41013msec
+
+	<p>The vast array of ways that fio can issue its IO requests lends it to benchmarking IO patterns 
+	and the use of various APIs to perform that IO. You can also run identical fio configurations on 
+	different filesystems or underlying hardware to see what difference changes at that level will make 
+	to performance.</p>
+
+	<p>Benchmarking different IO request systems for a particular IO pattern can be handy if you are 
+	about to write an IO-intensive application but are not sure which API and design will work best 
+	on your hardware. For example, you could keep the disk system and RAM fixed and see how well an 
+	IO load would be serviced using memory-mapped IO or the Linux asyncio interface. Of course this 
+	requires you to have a very intricate knowledge of the typical IO requests that your application 
+	will issue. If you already have a tool that uses something like memory-mapped files, then you can 
+	get IO patterns for typical use from the existing tool, feed them into fio using different IO engines, 
+	and get a reasonable picture of whether it might be worth porting the application to a different 
+	IO API for better performance.</p>
+	<i>Ben Martin has been working on filesystems for more than 10 years. He completed his Ph.D. and 
+	now offers consulting services focused on libferris, filesystems, and search solutions.</i></blockquote>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n_simulating_servers"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2000_00_>" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Inspecting disk IO performance with fio<!-- #$loop:item['xar_title']# --> </h4>
+Posted by: Anonymous [ip: 12.169.163.241] on April 09, 2008 08:22 PM<p>You ought to try Linux RAID 10. 
+It&#39;s not RAID 1+0, but a new type of array unique to Linux. It&#39;s more expensive for disks, but it&#39;s 
+very fast reads and writes, and far more reliable than RAID 5, which in my experience is not reliable 
+at all. This article http://www.enterprisenetworkingplanet.com/nethub/article.php/3730176 has some good 
+information, and so does the Linux RAID mailing list, though I warn you- some of the regulars are grumpy 
+old bastards who expect you to already know everything, even though RAID 10 is fairly new and almost 
+completely undocumented. http://marc.info/?l=linux-raid </div>
+</p>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2000_00_>" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Inspecting disk IO performance with fio<!-- #$loop:item['xar_title']# --> </h4>
+<!-- show changelog -->
+<!-- end changelog --><span>Posted by: Anonymous [ip: 68.226.113.197] on April 10, 2008 02:18 AM
+
+<p>RAID 10 or RAID 1+0 / RAID 0+1 depending on the manufacturer is the very best in performance. RAID 
+10 is either striped (0) then mirrored (1) = RAID 0+1 or mirrored (1) then striped (0) = RAID 1+0. Either 
+of those options are a wise choice for the best overall performance and protection. RAID 5 takes 6 operations 
+for one I/O. Read data, read data, read parity, write data, write data and finally write parity. RAID 
+6 (two parity drives) is even worse, but gives you the wonderful feeling of being able to survive 3 
+HD failures. </div>
+</p>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2000_00_>" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Inspecting disk IO performance with fio<!-- #$loop:item['xar_title']# --> </h4>
+<!-- show changelog -->
+<!-- end changelog --><span>Posted by: Anonymous [ip: 192.168.0.139] on April 12, 2008 08:56 PM</span>
+</div>
+
+<p>RAID10 rules for most applications, especially Linux &#39;md&#39;, albeit RAID5 may offer more usable diskspace 
+and good sequential throughput.<br>
+<br>
+Some say that, in order to update (write into an already written stripe) on a RAID5, all blocks composing 
+the stripe must be read in order to calculate the new &#39;parity&#39;. This is false, the new parity is equal 
+to &quot;(replaced data) XOR (new data) XOR (existing parity)&quot;, therefore the logic only has to read the 
+old block and the parity block, calculate then write the new blocks (data and parity).<br>
+<br>
+Here are some hints and benches: http://www.makarevitch.org/rant/raid/<br>
+</p>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2000_00_>" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2000_00_http_collectl_sourceforge_net_examples_html"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Inspecting disk IO performance with fio<!-- #$loop:item['xar_title']# --> </h4>
+<!-- show changelog -->
+<!-- end changelog --><span>Posted by: Anonymous [ip: 12.169.163.241] on April 10, 2008 02:59 AM</span>
+
+<p>The BAARF folks don&#39;t think much of RAID 5&#39;s dependability: http://www.baarf.com/ , http://www.miracleas.com/BAARF/RAID5_versus_RAID10.txt
+</p>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2000_00_>"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2000_00_http_collectl_sourceforge_net_examples_html" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2000_00_re_inspecting_disk_io_performance_with_fio"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4><a rel="nofollow" href="http://collectl.sourceforge.net/Examples.html">http://collectl.sourceforge.net/Examples.html</a>
+</h4>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2000_00_http_collectl_sourceforge_net_examples_html"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2000_00_re_inspecting_disk_io_performance_with_fio" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#n2008_0409_linux_com_inspecting__disk_io_performance_with_fio"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Re: Inspecting disk IO performance with fio </h4>
+Mark Seger on April 19, 2008 02:32 PM</span> </div>
+<blockquote>
+	I think one thing people tend to easily forget is that measuring I/O rates based on end-to-end time 
+	is a useful number, but I also find it very important to look at the rates over time, as often as 
+	once a second and compare them with what&#39;s happening on the rest of the system by also looking at 
+	the cpu, memory, network or even interrupts as well as other subsystems and that&#39;s why I wrote http://collectl.sourceforge.net/. 
+	I find this to be very complementary to load generators because they can be counted on to deliver 
+	a known I/O stream and collectl can tell you what&#39;s happening during that load. If you want a real 
+	quick look with minimal effort look at
+	<a rel="nofollow" href="http://collectl.sourceforge.net/Examples.html">http://collectl.sourceforge.net/Examples.html</a> 
+	.<br>
+	-mark
+</blockquote>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2000_00_re_inspecting_disk_io_performance_with_fio"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2008_0409_linux_com_inspecting__disk_io_performance_with_fio" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#NEWS_TOC"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>[Apr 09, 2008] <a rel="nofollow" href="http://www.linux.com/feature/131063">Linux.com Inspecting 
+disk IO performance with fio</a> By <a rel="nofollow" href="http://monkeyiq.blogspot.com/">Ben Martin</a></h4>
+<blockquote>
+
+	<p>Storage performance has failed to keep up with that of other major components of computer systems. 
+	Hard disks have gotten larger, but their speed has not kept pace with the relative speed improvements 
+	in RAM and CPU technology. The potential for your hard drive to be your system&#39;s performance bottleneck 
+	makes knowing how fast your disks and filesystems are and getting quantitative measurements on any 
+	improvements you can make to the disk subsystem important. One way to make disk access faster is 
+	to use more disks in combination, as in a
+	<a rel="nofollow" href="http://www.pcguide.com/ref/hdd/perf/raid/levels/singleLevel5-c.html">RAID-5</a> 
+	configuration.</p>
+</blockquote>
+</div>
+To get a basic idea of how fast a physical disk can be accessed from Linux you can use the
+<a rel="nofollow" href="http://sourceforge.net/projects/hdparm/">hdparm</a> tool with the <code>-T</code> 
+and <code>-t</code> options. The <code>-T</code> option takes advantage of the Linux disk cache and 
+gives an indication of how much information the system could read from a disk if the disk were fast 
+enough to keep up. The <code>-t</code> option also reads the disk through the cache, but without any 
+precaching of results. Thus <code>-t</code> can give an idea of how fast a disk can deliver information 
+stored sequentially on disk.<p>The hdparm tool isn&#39;t the best indicator of real-world performance. It 
+operates at a very low level; once you place a filesystem onto a disk partition you might get significantly 
+different results. You will also see large differences in speed between sequential access and random 
+access. It would also be good to be able to benchmark a filesystem stored on a group of disks in a RAID 
+configuration.</p>
+
+<p><a rel="nofollow" href="http://freshmeat.net/projects/fio/">fio</a> was created to allow benchmarking 
+specific disk IO workloads. It can issue its IO requests using one of many synchronous and asynchronous 
+IO APIs, and can also use various APIs which allow many IO requests to be issued with a single API call. 
+You can also tune how large the files fio uses are, at what offsets in those files IO is to happen at, 
+how much delay if any there is between issuing IO requests, and what if any filesystem sync calls are 
+issued between each IO request. A sync call tells the operating system to make sure that any information 
+that is cached in memory has been saved to disk and can thus introduce a significant delay. The options 
+to fio allow you to issue very precisely defined IO patterns and see how long it takes your disk subsystem 
+to complete these tasks.</p>
+
+<p>fio is packaged in the standard repository for Fedora 8 and is available for openSUSE through the
+<a rel="nofollow" href="http://software.opensuse.org/search">openSUSE Build Service</a>. Users of Debian-based 
+distributions will have to compile from source with the <code>make; sudo make install</code> combination.
+</p>
+
+<p>The first test you might like to perform is for random read IO performance. This is one of the nastiest 
+IO loads that can be issued to a disk, because it causes the disk head to seek a lot, and disk head 
+seeks are extremely slow operations relative to other hard disk operations. One area where random disk 
+seeks can be issued in real applications is during application startup, when files are requested from 
+all over the hard disk. You specify fio benchmarks using configuration files with an ini file format. 
+You need only a few parameters to get started. <code>rw=randread</code> tells fio to use a random reading 
+access pattern, <code>size=128m</code> specifies that it should transfer a total of 128 megabytes of 
+data before calling the test complete, and the <code>directory</code> parameter explicitly tells fio 
+what filesystem to use for the IO benchmark. On my test machine, the /tmp filesystem is an ext3 filesystem 
+stored on a RAID-5 array consisting of three 500GB Samsung SATA disks. If you don&#39;t specify <code>directory</code>, 
+fio uses the current directory that the shell is in, which might not be what you want. The configuration 
+file and invocation is shown below.</p>
+
+<pre>
+			$ cat random-read-test.fio ; random read of 128mb of data [random-read] 
+			rw=randread size=128m directory=/tmp/fio-testing/data $ fio random-read-test.fio 
+			random-read: (g=0): rw=randread, bs=4K-4K/4K-4K, ioengine=sync, iodepth=1 
+			Starting 1 process random-read: Laying out IO file(s) (1 file(s) / 128MiB) 
+			Jobs: 1 (f=1): [r] [100.0% done] [ 3588/ 0 kb/s] [eta 00m:00s] random-read: 
+			(groupid=0, jobs=1): err= 0: pid=30598 read : io=128MiB, bw=864KiB/s, 
+			iops=211, runt=155282msec clat (usec): min=139, max=148K, avg=4736.28, 
+			stdev=6001.02 bw (KiB/s) : min= 227, max= 5275, per=100.12%, avg=865.00, 
+			stdev=362.99 cpu : usr=0.07%, sys=1.27%, ctx=32783, majf=0, minf=10 
+			IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% 
+			issued r/w: total=32768/0, short=0/0 lat (usec): 250=34.92%, 500=0.36%, 
+			750=0.02%, 1000=0.05% lat (msec): 2=0.41%, 4=12.80%, 10=44.96%, 20=5.16%, 
+			50=0.94% lat (msec): 100=0.37%, 250=0.01% Run status group 0 (all jobs): 
+			READ: io=128MiB, aggrb=864KiB/s, minb=864KiB/s, maxb=864KiB/s, mint=155282msec, 
+			maxt=155282msec Disk stats (read/write): dm-6: ios=32768/148, merge=0/0, 
+			ticks=154728/12490, in_queue=167218, util=99.59% </pre>
+</div>
+
+<pre></pre>
+
+<p>fio produces many figures in this test. Overall, higher values for bandwidth and lower values for 
+latency constitute better results.</p>
+
+<p>The bw result shows the average bandwidth achieved by the test. The clat and bw lines show information 
+about the completion latency and bandwidth respectively. The completion latency is the time between 
+submitting a request and it being completed. The min, max, average, and standard deviation for the latency 
+and bandwidth are shown. In this case, the standard deviation for both completion latency and bandwidth 
+is quite large relative to the average value, so some IO requests were served much faster than others. 
+The CPU line shows you how much impact the IO load had on the CPU, so you can tell if the processor 
+in the machine is too slow for the IO you want to perform. The IO depths section is more interesting 
+when you are testing an IO workload where multiple requests for IO can be outstanding at any point in 
+time as is done in the next example. Because the above test only allowed a single IO request to be issued 
+at any time, the IO depths were at 1 for 100% of the time. The latency figures indented under the IO 
+depths section show an overview of how long each IO request took to complete; for these results, almost 
+half the requests took between 4 and 10 milliseconds between when the IO request was issued and when 
+the result of that request was reported. The latencies are reported as intervals, so the <code>4=12.80%, 
+10=44.96%</code> section reports that 44.96% of requests took more than 4 (the previous reported value) 
+and up to 10 milliseconds to complete.</p>
+
+<p>The large READ line third from last shows the average, min, and max bandwidth for each execution 
+thread or process. fio lets you define many threads or processes to all submit work at the same time 
+during a benchmark, so you can have many threads, each using synchronous APIs to perform IO, and benchmark 
+the result of all these threads running at once. This lets you test IO workloads that are closer to 
+many server applications, where a new thread or process is spawned to handle each connecting client. 
+In this case we have only one thread. As the READ line near the bottom of output shows, the single thread 
+has an 864Kbps aggregate bandwidth (aggrb) which tells you that either the disk is slow or the manner 
+in which IO is submitted to the disk system is not friendly, causing the disk head to perform many expensive 
+seeks and thus producing a lower overall IO bandwidth. If you are submitting IO to the disk in a friendly 
+way you should be getting much closer to the speeds that hdparm reports (typically around 40-60Mbps).</p>
+
+<p>I performed the same test again, this time using the Linux asynchronous IO subsystem in direct IO 
+mode with the possibility, based on the <code>iodepth</code> parameter, of eight requests for asynchronous 
+IO being issued and not fulfilled because the system had to wait for disk IO at any point in time. The 
+choice of allowing up to only eight IO requests in the queue was arbitrary, but typically an application 
+will limit the number of outstanding requests so the system does not become bogged down. In this test, 
+the benchmark reported almost three times the bandwidth. The abridged results are shown below. The IO 
+depths show how many asynchronous IO requests were issued but had not returned data to the application 
+during the course of execution. The figures are reported for intervals from the previous figure; for 
+example, <code>the 8=96.0%</code> tells you that 96% of the time there were five, six, seven, or eight 
+requests in the async IO queue, while, based on <code>4=4.0%</code>, 4% of the time there were only 
+three or four requests in the queue.</p>
+
+<pre> 
+			$ cat random-read-test-aio.fio ; same as random-read-test.fio ; ... 
+			ioengine=libaio iodepth=8 direct=1 invalidate=1 $ fio random-read-test-aio.fio 
+			random-read: (groupid=0, jobs=1): err= 0: pid=31318 read : io=128MiB, 
+			bw=2,352KiB/s, iops=574, runt= 57061msec slat (usec): min=8, max=260, 
+			avg=25.90, stdev=23.23 clat (usec): min=1, max=124K, avg=13901.91, stdev=12193.87 
+			bw (KiB/s) : min= 0, max= 5603, per=97.59%, avg=2295.43, stdev=590.60 
+			... IO depths : 1=0.1%, 2=0.1%, 4=4.0%, 8=96.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% 
+			... Run status group 0 (all jobs): READ: io=128MiB, aggrb=2,352KiB/s, 
+			minb=2,352KiB/s, maxb=2,352KiB/s, mint=57061msec, maxt=57061msec
+		 </pre>
+
+<p>Random reads are always going to be limited by the seek time of the disk head. Because the async 
+IO test could issue as many as eight IO requests before waiting for any to complete, there was more 
+chance for reads in the same disk area to be completed together, and thus an overall boost in IO bandwidth.</p>
+
+<p>The HOWTO file from the fio distribution gives full details of the options you can use to specify 
+benchmark workloads. One of the more interesting parameters is <code>rw</code>, which can specify sequential 
+or random reads and or writes in many combinations. The <code>ioengine</code> parameter can select how 
+the IO requests are issued to the kernel. The <code>invalidate</code> option causes the kernel buffer 
+and page cache to be invalidated for a file before beginning the benchmark. The <code>runtime</code> 
+specifies that a test should run for a given amount of time and then be considered complete. The
+<code>thinktime</code> parameter inserts a specified delay between IO requests, which is useful for 
+simulating a real application that would normally perform some work on data that is being read from 
+disk. <code>fsync=<i>n</i></code> can be used to issue a sync call after every <i>n</i> writes issued.
+<code>write_iolog</code> and <code>read_iolog</code> cause fio to write or read a log of all the IO 
+requests issued. With these commands you can capture a log of the exact IO commands issued, edit that 
+log to give exactly the IO workload you want, and benchmark those exact IO requests. The iolog options 
+are great for importing an IO access pattern from an existing application for use with fio.</p>
+
+<center><table border="0" width="100"><tr>
+<td align="center"><a href="#n2008_0409_linux_com_inspecting__disk_io_performance_with_fio"><img border="0" src="/Images/up.png" width="16" height="16"></a></td>
+<td align="center"><a name="n2008_0409_simulating_servers" href="#NEWS_TOC"><img border="0" src="/Images/home.gif" width="16" height="18"></a></td>
+<td align="center"><a href="#NEWS_TOC"><img border="0" src="/Images/down.png" width="16" height="16"></a></td>
+</tr></table></center>
+<h4>Simulating servers</h4>
+
+<p>You can also specify multiple threads or processes to all submit IO work at the same time to benchmark 
+server-like filesystem interaction. In the following example I have four different processes, each issuing 
+their own IO loads to the system, all running at the same time. I&#39;ve based the example on having two 
+memory-mapped query engines, a background updater thread, and a background writer thread. The difference 
+between the two writing threads is that the writer thread is to simulate writing a journal, whereas 
+the background updater must read and write (update) data. bgupdater has a thinktime of 40 microseconds, 
+causing the process to sleep for a little while after each completed IO.</p>
+
+<pre> 
+			$ cat four-threads-randio.fio ; Four threads, two query, two writers. 
+			[global] rw=randread size=256m directory=/tmp/fio-testing/data ioengine=libaio 
+			iodepth=4 invalidate=1 direct=1 [bgwriter] rw=randwrite iodepth=32 [queryA] 
+			iodepth=1 ioengine=mmap direct=0 thinktime=3 [queryB] iodepth=1 ioengine=mmap 
+			direct=0 thinktime=5 [bgupdater] rw=randrw iodepth=16 thinktime=40 size=32m 
+			$ fio four-threads-randio.fio bgwriter: (g=0): rw=randwrite, bs=4K-4K/4K-4K, 
+			ioengine=libaio, iodepth=32 queryA: (g=0): rw=randread, bs=4K-4K/4K-4K, 
+			ioengine=mmap, iodepth=1 queryB: (g=0): rw=randread, bs=4K-4K/4K-4K, 
+			ioengine=mmap, iodepth=1 bgupdater: (g=0): rw=randrw, bs=4K-4K/4K-4K, 
+			ioengine=libaio, iodepth=16 Starting 4 processes bgwriter: (groupid=0, 
+			jobs=1): err= 0: pid=3241 write: io=256MiB, bw=7,480KiB/s, iops=1,826, 
+			runt= 35886msec slat (usec): min=9, max=106K, avg=35.29, stdev=583.45 
+			clat (usec): min=117, max=224K, avg=17365.99, stdev=24002.00 bw (KiB/s) 
+			: min= 0, max=14636, per=72.30%, avg=5746.62, stdev=5225.44 cpu : usr=0.40%, 
+			sys=4.13%, ctx=18254, majf=0, minf=9 IO depths : 1=0.1%, 2=0.1%, 4=0.4%, 
+			8=3.3%, 16=59.7%, 32=36.5%, &gt;=64=0.0% issued r/w: total=0/65536, short=0/0 
+			lat (usec): 250=0.05%, 500=0.33%, 750=0.70%, 1000=1.11% lat (msec): 
+			2=7.06%, 4=14.91%, 10=27.10%, 20=21.82%, 50=20.32% lat (msec): 100=4.74%, 
+			250=1.86% queryA: (groupid=0, jobs=1): err= 0: pid=3242 read : io=256MiB, 
+			bw=589MiB/s, iops=147K, runt= 445msec clat (usec): min=2, max=165, avg= 
+			3.48, stdev= 2.38 cpu : usr=70.05%, sys=30.41%, ctx=91, majf=0, minf=65545 
+			IO depths : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% 
+			issued r/w: total=65536/0, short=0/0 lat (usec): 4=76.20%, 10=22.51%, 
+			20=1.17%, 50=0.05%, 100=0.05% lat (usec): 250=0.01% queryB: (groupid=0, 
+			jobs=1): err= 0: pid=3243 read : io=256MiB, bw=455MiB/s, iops=114K, 
+			runt= 576msec clat (usec): min=2, max=303, avg= 3.48, stdev= 2.31 bw 
+			(KiB/s) : min=464158, max=464158, per=1383.48%, avg=464158.00, stdev= 
+			0.00 cpu : usr=73.22%, sys=26.43%, ctx=69, majf=0, minf=65545 IO depths 
+			: 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0% issued 
+			r/w: total=65536/0, short=0/0 lat (usec): 4=76.81%, 10=21.61%, 20=1.53%, 
+			50=0.02%, 100=0.03% lat (usec): 250=0.01%, 500=0.01% bgupdater: (groupid=0, 
+			jobs=1): err= 0: pid=3244 read : io=16,348KiB, bw=1,014KiB/s, iops=247, 
+			runt= 16501msec slat (usec): min=7, max=42,515, avg=47.01, stdev=665.19 
+			clat (usec): min=1, max=137K, avg=14215.23, stdev=20611.53 bw (KiB/s) 
+			: min= 0, max= 1957, per=2.37%, avg=794.90, stdev=495.94 write: io=16,420KiB, 
+			bw=1,018KiB/s, iops=248, runt= 16501msec slat (usec): min=9, max=42,510, 
+			avg=38.73, stdev=663.37 clat (usec): min=202, max=229K, avg=49803.02, 
+			stdev=34393.32 bw (KiB/s) : min= 0, max= 1840, per=10.89%, avg=865.54, 
+			stdev=411.66 cpu : usr=0.53%, sys=1.39%, ctx=12089, majf=0, minf=9 IO 
+			depths : 1=0.1%, 2=0.1%, 4=0.3%, 8=22.8%, 16=76.8%, 32=0.0%, &gt;=64=0.0% 
+			issued r/w: total=4087/4105, short=0/0 lat (usec): 2=0.02%, 4=0.04%, 
+			20=0.01%, 50=0.06%, 100=1.44% lat (usec): 250=8.81%, 500=4.24%, 750=2.56%, 
+			1000=1.17% lat (msec): 2=2.36%, 4=2.62%, 10=9.47%, 20=13.57%, 50=29.82% 
+			lat (msec): 100=19.07%, 250=4.72% Run status group 0 (all jobs): READ: 
+			io=528MiB, aggrb=33,550KiB/s, minb=1,014KiB/s, maxb=589MiB/s, mint=445msec, 
+			maxt=16501msec WRITE: io=272MiB, aggrb=7,948KiB/s, minb=1,018KiB/s, 
+			maxb=7,480KiB/s, mint=16501msec, maxt=35886msec Disk stats (read/write): 
+			dm-6: ios=4087/69722, merge=0/0, ticks=58049/1345695, in_queue=1403777, 
+			util=99.74% </div>
+		 </pre>
+
+<p>As one would expect, the bandwidth the array achieved in the query and writer processes was vastly 
+different. Queries are performed at about 500Mbps while writing comes in at 1Mbps or 7.5Mbps depending 
+on whether it is read/write or purely write performance respectively. The IO depths show the number 
+of pending IO requests that are queued when an IO request is issued. For example, for the bgupdater 
+process, nearly 1/4 of the async IO requests are being fulfilled with eight or less requests in the 
+queue of a potential 16. In contrast, the bgwriter has more than half of its requests performed with 
+16 or less pending requests in the queue.</p>
+
+<p>To contrast with the three-disk RAID-5 configuration, I reran the four-threads-randio.fio test on 
+a single Western Digital 750GB drive. The bgupdater process achieved less than half the bandwidth and 
+each of the query processes ran at 1/3 the overall bandwidth. For this test the Western Digital drive 
+was on a different computer with different CPU and RAM specifications as well, so any comparison should 
+be taken with a grain of salt.</p>
+
+<pre> 			bgwriter: (groupid=0, jobs=1): err= 0: pid=14963 write: io=256MiB, bw=6,545KiB/s, 
+			iops=1,597, runt= 41013msec queryA: (groupid=0, jobs=1): err= 0: pid=14964 
+			read : io=256MiB, bw=160MiB/s, iops=39,888, runt= 1643msec queryB: (groupid=0, 
+			jobs=1): err= 0: pid=14965 read : io=256MiB, bw=163MiB/s, iops=40,680, 
+			runt= 1611msec bgupdater: (groupid=0, jobs=1): err= 0: pid=14966 read 
+			: io=16,416KiB, bw=422KiB/s, iops=103, runt= 39788msec write: io=16,352KiB, 
+			bw=420KiB/s, iops=102, runt= 39788msec READ: io=528MiB, aggrb=13,915KiB/s, 
+			minb=422KiB/s, maxb=163MiB/s, mint=1611msec, maxt=39788msec WRITE: io=272MiB, 
+			aggrb=6,953KiB/s, minb=420KiB/s, maxb=6,545KiB/s, mint=39788msec, maxt=41013msec
+		 </pre>
+
+<p>The vast array of ways that fio can issue its IO requests lends it to benchmarking IO patterns and 
+the use of various APIs to perform that IO. You can also run identical fio configurations on different 
+filesystems or underlying hardware to see what difference changes at that level will make to performance.</p>
+
+<p>Benchmarking different IO request systems for a particular IO pattern can be handy if you are about 
+to write an IO-intensive application but are not sure which API and design will work best on your hardware. 
+For example, you could keep the disk system and RAM fixed and see how well an IO load would be serviced 
+using memory-mapped IO or the Linux asyncio interface. Of course this requires you to have a very intricate 
+knowledge of the typical IO requests that your application will issue. If you already have a tool that 
+uses something like memory-mapped files, then you can get IO patterns for typical use from the existing 
+tool, feed them into fio using different IO engines, and get a reasonable picture of whether it might 
+be worth porting the application to a different IO API for better performance.</p>
+<i>Ben Martin has been working on filesystems for more than 10 years. He completed his Ph.D. and now 
+offers consulting services focused on libferris, filesystems, and search solutions.</i>
+
+<h2><a name="Recommended_Links">Recommended Links</a></h2>
+
+<table border="0" width="100%" height="110">
+<tr>
+<td width="100%" align="center">	
+
+<h3><a href="/topvisited_history.shtml">Softpanorama Top Visited</a></h3>
+<iframe src="/topvisited.shtml" width="100%" height="330"><p>Your browser does not support iframes.</p>
+</iframe>
+</td>
+</table>
+<h3>Softpanorama Recommended</h3>
+
+
+<h4>Internal</h4>
+<ul>
+
+	<li><a href="disk_subsystem_tuning.shtml">Linux disk subsystem tuning</a></li>
+
+	<li><a href="_Scripts/tcp_performance_tuning.txt">Commercial_linuxes/Performance_tuning/tcp_performance_tuning.txt</a></li>
+
+	<li><a href="optimizing_io_on_scsi_bus_with_san.shtml">Troubleshooting Linux Performanc</a></li>
+</ul>
+
+<p><a href="../Suse/Performance_tuning/performance_tuning_for_sles.pdf">Commercial_linuxes/Performance_tuning/Performance/Performance%20Tuning%20for%20SUSE%20Linux%20Enterprise%20Server.pdf</a></p>
+
+<p><a href="_Articles/tut303.pdf">Commercial_linuxes/Performance_tuning/Performance/tut303.pdf</a></p>
+ 
+</b>
+<hr>
+<hr noshade color="#FF0000" size="5"><center>
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-4031247137266443";
+/* upper */
+google_ad_slot = "4815841291";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</center>
+<hr noshade color="#FF0000" size="5">
+
+<h2><a name="Etc">Etc</a></h2>
+
+<p>FAIR USE NOTICE This site contains 
+		copyrighted material the use of which has not always been specifically 
+		authorized by the copyright owner. We are making such material available 
+		in our efforts to advance understanding of environmental, political, 
+		human rights, economic, democracy, scientific, and social justice 
+		issues, etc. We believe this constitutes a 'fair use' of any such 
+		copyrighted material as provided for in section 107 of the US Copyright 
+		Law. In accordance with Title 17 U.S.C. Section 107, the material on 
+		this site is distributed without profit exclusivly for research and educational purposes.&nbsp;&nbsp; If you wish to use 
+		copyrighted material from this site for purposes of your own that go 
+		beyond 'fair use', you must obtain permission from the copyright owner.&nbsp; </p>
+
+<p>ABUSE: IPs or network segments from which we detect a stream of probes might be blocked for no 
+less then 90 days. Multiple types of probes increase this period.&nbsp;&nbsp; </p>
+
+<p><b>Society</b></p>
+<blockquote>
+
+<p><b><a href="/Skeptics/groupthink.shtml"><font size="2">Groupthink</font></a><font size="2"> :
+<a href="/Skeptics/Political_skeptic/Two_party_system_as_poliarchy/index.shtml">Two Party System 
+as Polyarchy</a> : 
+<a href="/Skeptics/Financial_skeptic/Casino_capitalism/Corruption_of_regulators/index.shtml">
+Corruption of Regulators</a> :
+<a href="/Social/Bureaucracy/index.shtml">Bureaucracies</a> :
+<a href="/Social/Toxic_managers/Micromanagers/understanding_micromanagers.shtml">Understanding Micromanagers 
+and Control Freaks</a> : <a href="/Social/Toxic_managers/index.shtml">Toxic Managers</a> :&nbsp;&nbsp;
+<a href="/Skeptics/Pseudoscience/harvard_mafia.shtml">Harvard Mafia</a> :
+<a href="/Social/Toxic_managers/Communication/diplomatic_communication.shtml">Diplomatic Communication</a> 
+: <a href="/Social/Toxic_managers/surviving_a_bad_performance_review.shtml">Surviving a Bad Performance 
+Review</a> : <a href="/Skeptics/Financial_skeptic/index.shtml">Insufficient Retirement Funds as 
+Immanent Problem of Neoliberal Regime</a> : <a href="/Skeptics/index.shtml">PseudoScience</a> :
+<a href="/Skeptics/Political_skeptic/index.shtml">Who Rules America</a> :
+<a href="/Skeptics/Political_skeptic/Neoliberalism/index.shtml">Neoliberalism
+</a>&nbsp;: <a href="/Skeptics/Political_skeptic/Elite_theory/iron_law_of_oligarchy.shtml">The Iron 
+Law of Oligarchy</a> : </font><a href="/Skeptics/Political_skeptic/libertarianism.shtml">
+<font size="2">Libertarian Philosophy</font></a></b></p>
+</blockquote>
+
+<p><b>Quotes</b></p>
+<blockquote>
+
+<p><b><font size="2" face="Arial"> 
+<a href="/Skeptics/Quotes/war_and_peace_quotes.shtml">War and Peace</a> </font>
+<font face="Arial"><font size="2">: <a href="/Skeptics/Quotes/financial_quotes.shtml">Skeptical 
+Finance</a></font><font size="2"> : <a href="/Skeptics/Quotes/famous_galbraith_quotes.shtml">John 
+Kenneth Galbraith</a> :<a href="/Skeptics/Quotes/talleyrand_quotes.shtml">Talleyrand</a> :
+<a href="/Skeptics/Quotes/oscar_wilde_quotes.shtml">Oscar Wilde</a> :
+<a href="/Skeptics/Quotes/bismarck_quotes.shtml">Otto Von Bismarck</a> :
+<a href="/Skeptics/Quotes/keynes_quotes.shtml">Keynes</a> :
+<a href="/Skeptics/Quotes/george_carlin.shtml">George Carlin</a> :
+<a href="/Skeptics/skeptical_quotes.shtml">Skeptics</a> :
+<a href="/Skeptics/Quotes/propaganda.shtml">Propaganda</a>&nbsp; : <a href="/SE/quotes.shtml">SE 
+quotes</a> : <a href="/Lang/quotes.shtml">Language Design and Programming Quotes</a> :
+<a href="/Bulletin/quotes.shtml">Random IT-related quotes</a> :&nbsp;
+<a href="/Skeptics/Quotes/somerset_maugham.shtml">Somerset Maugham</a> :
+<a href="/Skeptics/Quotes/marcus_aurelius.shtml">Marcus Aurelius</a> :
+<a href="/Skeptics/Quotes/kurt_vonnegut_quotes.shtml">Kurt Vonnegut</a> :
+<a href="/Skeptics/Quotes/eric_hoffer.shtml">Eric Hoffer</a> :
+<a href="/Skeptics/Quotes/churchill_quotes.shtml">Winston Churchill</a> :
+<a href="/Skeptics/Quotes/napoleon_quotes.shtml">Napoleon Bonaparte</a> :
+<a href="/Skeptics/Quotes/ambrose_bierce.shtml">Ambrose Bierce</a> :&nbsp;
+<a href="/Skeptics/Quotes/bernard_shaw.shtml">Bernard Shaw</a> : </font>
+<a href="/Skeptics/Quotes/mark_twain_quotes.shtml"><font size="2">Mark Twain Quotes</font></a></font></b></p>
+</blockquote>
+
+<p><b>Bulletin:</b></p>
+<blockquote>
+
+<p><b><font face="Arial"><a href="http://softpanorama.biz/Bulletin/Sp2013_v25/bulletin25_12.shtml">
+<font size="2">Vol 25, No.12 (December, 2013) Rational Fools vs. Efficient Crooks The efficient 
+markets hypothesis</font></a><font size="2"> :
+<a href="http://softpanorama.biz/Skeptics/Political_skeptic/Bulletin/political_skeptic2013.shtml">
+Political Skeptic Bulletin, 2013</a> :
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Unemployment/Bulletin/unempoyment2010.shtml">
+Unemployment Bulletin, 2010</a> :
+<a href="http://softpanorama.biz/Bulletin/Sp2011_v23/bulletin23_10.shtml">&nbsp;Vol 23, No.10 
+(October, 2011) An observation about corporate security departments</a> :
+<a href="http://softpanorama.biz/Skeptics/Political_skeptic/Fifth_column/Color_revolutions/Euromaydan/Bulletin/euromaydan14_06.shtml">
+Slightly Skeptical Euromaydan Chronicles, June 2014</a> :
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Casino_capitalism/12_Apostols_of_deregulation/Greenspan/Bulletin/greenspan_bulletin2008.shtml">
+Greenspan legacy bulletin, 2008</a> :
+<a href="/Bulletin/Sp2013_v25/bulletin25_10.shtml">Vol 25, No.10 (October, 2013) Cryptolocker Trojan 
+(Win32/Crilock.A)</a> :
+<a href="/Bulletin/Sp2013_v25/bulletin25_08.shtml">Vol 25, No.08 (August, 2013) Cloud providers 
+as intelligence collection hubs</a> : 
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2010.shtml">
+Financial Humor Bulletin, 2010</a> :
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Inequality/Bulletin/inequality2009.shtml">
+Inequality Bulletin, 2009</a> :
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2008.shtml">
+Financial Humor Bulletin, 2008</a> :
+<a href="http://softpanorama.biz/Copyright/Bulletin/copyleft_problems2004.shtml">Copyleft Problems 
+Bulletin, 2004</a> :
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2011.shtml">
+Financial Humor Bulletin, 2011</a> :
+<a href="http://softpanorama.biz/Skeptics/Financial_skeptic/Energy/Bulletin/energy_bulletin2010.shtml">
+Energy Bulletin, 2010</a> : <a href="http://softpanorama.biz/Malware/Bulletin/malware2010.shtml">
+Malware Protection Bulletin, 2010</a> : <a href="/Bulletin/Sp2014_v26/bulletin26_01.shtml">Vol 26, 
+No.1 (January, 2013) Object-Oriented Cult</a> :
+<a href="http://softpanorama.biz/Skeptics/Political_skeptic/Bulletin/political_skeptic2011.shtml">
+Political Skeptic Bulletin, 2011</a> :
+<a href="/Bulletin/Sp2011_v23/bulletin23_11.shtml">Vol 23, No.11 (November, 2011) Softpanorama classification 
+of sysadmin horror stories</a> : <a href="/Bulletin/Sp2013_v25/bulletin25_05.shtml">Vol 25, No.05 
+(May, 2013) Corporate bullshit as a communication method</a>&nbsp; : </font><a href="/Bulletin/Sp2013_v25/bulletin25_06.shtml">
+<font size="2">Vol 25, No.06 (June, 2013) A Note on the Relationship of Brooks Law and Conway Law</font></a></font></b></p>
+</blockquote>
+
+<p align="left"><b>History:</b></p>
+<blockquote>
+
+<p><b><font face="Arial"><a href="/History/index.shtml"><font size="2">Fifty glorious years (1950-2000): 
+the triumph of the US computer engineering</font></a><font size="2"> :
+<a href="/People/Knuth/index.shtml">Donald Knuth</a> : <a href="/People/Knuth/taocp.shtml">TAoCP 
+and its Influence of Computer Science</a> : <a href="/People/Stallman/index.shtml">Richard Stallman</a> 
+: <a href="/People/Torvalds/index.shtml">Linus Torvalds</a>&nbsp; :
+<a href="/People/Wall/index.shtml">Larry Wall </a>&nbsp;:
+<a href="/People/Ousterhout/index.shtml">John K. Ousterhout</a> : <a href="/History/ctss.shtml">
+CTSS</a> : <a href="/History/multix.shtml">Multix OS</a> <a href="/History/Unix/index.shtml">Unix 
+History</a> : <a href="/People/Shell_giants/introduction.shtml">Unix shell history</a> :
+<a href="/Editors/Vimorama/history.shtml">VI editor</a> :
+<a href="/Scripting/Piporama/history.shtml">History of pipes concept</a> :
+<a href="/Solaris/solaris_history.shtml">Solaris</a> : <a href="/History/dos_history.shtml">MS DOS</a> 
+:&nbsp; <a href="/History/lang_history.shtml">Programming Languages History</a> :
+<a href="/Lang/pl1.shtml">PL/1</a> : <a href="/Lang/simula67.shtml">Simula 67</a> :
+<a href="/Lang/Cilorama/history.shtml">C</a> :
+<a href="/People/Stallman/history_of_gcc_development.shtml">History of GCC development</a> :&nbsp;
+<a href="/People/Scripting_giants/scripting_languages_as_vhll.shtml">Scripting Languages</a> :
+<a href="/Scripting/Perlbook/Ch01/perl_history.shtml">Perl history&nbsp; </a>&nbsp;:
+<a href="/History/os_history.shtml">OS History</a> : <a href="/Mail/history.shtml">Mail</a> :
+<a href="/DNS/history.shtml">DNS</a> : <a href="/Net/Application_layer/SSH/ssh_history.shtml">SSH</a> 
+: <a href="/History/cpu_history.shtml">CPU Instruction Sets</a> :
+<a href="/Hardware/Sun/history_of_sparc.shtml">SPARC systems 1987-2006</a> :
+<a href="/OFM/Paradigm/Ch03/norton_commander.shtml">Norton Commander</a> :
+<a href="/Windows/Norton_utilities/history.shtml">Norton Utilities</a> :
+<a href="/Windows/Ghosting/ghost_history.shtml">Norton Ghost</a> :
+<a href="/Office/Frontpage/history.shtml">Frontpage history</a> :
+<a href="/Malware/Malware_defense_history/index.shtml">Malware Defense History</a> :
+<a href="/Utilities/Screen/history.shtml">GNU Screen</a> : </font>
+<a href="/OSS/oss_early_history.shtml"><font size="2">OSS early history</font></a></font></b></p>
+</blockquote>
+
+<p><b>Classic books:</b></p>
+<blockquote>
+
+<p><b><font face="Arial"><a href="/Bookshelf/Classic/peter_principle.shtml"><font size="2">The Peter 
+Principle</font></a><font size="2"> : <a href="/Bookshelf/Classic/parkinson_law.shtml">Parkinson 
+Law</a> : <a href="/Bookshelf/Classic/nineteen_eighty_four.shtml">1984</a> :
+<a href="/Bookshelf/Classic/tmmm.shtml">The Mythical Man-Month</a> :&nbsp;
+<a href="/Bookshelf/Classic/polya_htsi.shtml">How to Solve It by George Polya</a> :
+<a href="/Bookshelf/Classic/taocp.shtml">The Art of Computer Programming</a> :
+<a href="/Bookshelf/Classic/teops.shtml">The Elements of Programming Style</a> :
+<a href="/Bookshelf/Classic/unix_haters_handhook.shtml">The Unix Hater’s Handbook</a> :
+<a href="/Bookshelf/Classic/jargon_file.shtml">The Jargon file</a> :
+<a href="/Bookshelf/Classic/true_believer.shtml">The True Believer</a> :
+<a href="/Bookshelf/Classic/programming_pearls.shtml">Programming Pearls</a> :
+<a href="/Bookshelf/Classic/good_soldier_svejk.shtml">The Good Soldier Svejk</a> : </font>
+<a href="/Bookshelf/Classic/power_elite.shtml"><font size="2">The Power Elite</font></a></font></b></p>
+</blockquote>
+
+<p><b>Most popular humor pages:</b></p>
+<blockquote>
+
+<p><font face="Arial"><b><a href="/Bulletin/Humor/Slackerism/it_slacker_manifest.shtml">
+<font size="2">Manifest of the Softpanorama IT Slacker Society</font></a><font size="2"> :
+<a href="/Bulletin/Humor/Slackerism/ten_commandments_of_software_slackerism.shtml">Ten Commandments 
+of the IT Slackers Society</a> : <a href="/Bulletin/Humor/index.shtml">Computer Humor Collection</a> 
+: <a href="/Bulletin/Humor/bsd_logo_story.shtml">BSD Logo Story</a> :
+<a href="/Bulletin/Humor/cuckoo_egg.shtml">The Cuckoo&#39;s Egg </a>:
+<a href="/Bulletin/Humor/slang.shtml">IT Slang</a> : <a href="/Lang/Cpp_rama/humor.shtml">C++ Humor</a> 
+: <a href="/Bulletin/Humor/Archive/humor059.shtml">ARE YOU A BBS ADDICT?</a> :
+<a href="/Bulletin/Humor/Archive/humor092.shtml">The Perl Purity Test</a> :
+<a href="/Bulletin/Humor/Archive/humor065.shtml">Object oriented programmers of all nations</a> 
+: <a href="/Skeptics/Financial_skeptic/Humor/financial_humor.shtml">Financial Humor</a> :
+<a href="/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2008.shtml">Financial Humor Bulletin, 
+2008</a> : <a href="/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2010.shtml">Financial 
+Humor Bulletin, 2010</a> : <a href="/Editors/humor.shtml">The Most Comprehensive Collection of Editor-related 
+Humor</a> : <a href="/Lang/programming_languages_humor.shtml">Programming Language Humor</a> :
+<a href="/Skeptics/Financial_skeptic/Casino_capitalism/Systemic_instability_of_financial_sector/TBTF/Goldman_Sachs/humor.shtml">
+Goldman Sachs related humor</a> :
+<a href="/Skeptics/Financial_skeptic/Casino_capitalism/Twelve_apostles_of_deregulation/Greenspan/greenspan_humor.shtml">
+Greenspan humor</a> : <a href="/Lang/Cilorama/humor.shtml">C Humor</a> :
+<a href="/Scripting/humor.shtml">Scripting Humor</a> :
+<a href="/Bulletin/Humor/real_programmers_humor.shtml">Real Programmers Humor</a> :
+<a href="/WWW/humor.shtml">Web Humor</a> : <a href="/Copyright/humor.shtml">GPL-related Humor</a> 
+: <a href="/OFM/ofm_humor.shtml">OFM Humor</a> :
+<a href="/Skeptics/Political_skeptic/humor.shtml">Politically Incorrect Humor</a> :
+<a href="/Security/IDS/humor.shtml">IDS Humor</a> : <a href="/Bulletin/Humor/linux_sucks.shtml">
+&quot;Linux Sucks&quot; Humor </a>: <a href="/Links/Russian/Culture/Music/russian_musical_humor.shtml">Russian 
+Musical Humor</a> : <a href="/Bulletin/Humor/best_russian_programmer_humor.shtml">Best Russian Programmer 
+Humor</a> : <a href="/Bulletin/Humor/Archive/humor070.shtml">Microsoft plans to buy Catholic Church</a> 
+: <a href="/People/Stallman/rms_related_humor.shtml">Richard Stallman Related Humor</a> :
+<a href="/Admin/humor.shtml">Admin Humor</a> : <a href="/People/Wall/perl_related_humor.shtml">Perl-related 
+Humor</a> : <a href="/People/Torvalds/linus_torvalds_related_humor.shtml">Linus Torvalds Related 
+humor</a> : <a href="/Skeptics/humor.shtml">PseudoScience Related Humor</a> :
+<a href="/Net/net_humor.shtml">Networking Humor</a> :
+<a href="/Scripting/Shellorama/humor.shtml">Shell Humor</a> :
+<a href="/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2011.shtml">Financial Humor Bulletin, 
+2011</a> : <a href="/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2012.shtml">Financial 
+Humor Bulletin, 2012</a> :
+<a href="/Skeptics/Financial_skeptic/Humor/Bulletin/financial_humor2013.shtml">Financial Humor Bulletin, 
+2013</a> : <a href="/Lang/Javarama/humor.shtml">Java Humor</a> : <a href="/SE/humor.shtml">Software 
+Engineering Humor</a> : <a href="/Solaris/humor.shtml">Sun Solaris Related Humor</a> :
+<a href="/Education/humor.shtml">Education Humor</a> : <a href="/Admin/Tivoli/ibm_humor.shtml">IBM 
+Humor</a> : <a href="/Lang/Asmorama/humor.shtml">Assembler-related Humor</a> :
+<a href="/Editors/Vimorama/vim_humor.shtml">VIM Humor</a> : <a href="/Malware/humor.shtml">Computer 
+Viruses Humor</a> : <a href="/Bulletin/Humor/Archive/humor034.shtml">Bright tomorrow is rescheduled 
+to a day after tomorrow</a> : <a href="/Bulletin/Humor/classic_computer_humor.shtml">Classic Computer 
+Humor</a> </font></b></font></p>
+</blockquote>
+
+<p align="left"><b><a href="/Bulletin/Humor/last_but_not_least.shtml">The Last but not Least</a></b></p>
+<hr size="5" noshade color="#FF0000"><font face="Verdana" size="1">
+
+<p><i><b>Copyright © 1996-2015 by Dr. Nikolai Bezroukov</b></i>. <a target="_blank" href>www.softpanorama.org</a> 
+was created as a service to the UN Sustainable Development Networking Programme (<a target="_blank" href="http://www.un.org/Depts/dhl/sflib/">SDNP</a>) 
+in the author free time. This document is an industrial compilation designed and <b>created exclusively 
+for educational use</b> and is distributed under the <a href="/license.shtml">Softpanorama Content License</a>. 
+</p>
+
+<p>The site uses AdSense so you need to be aware of Google privacy policy. You you do not want to be 
+tracked by Google please disable Javascript for this site. <em>This site is perfectly usable without 
+Javascript.</em> </p>
+
+<p>Original materials copyright belong 
+to respective owners. <i><b>Quotes are made<font color="#FF0000"> for educational purposes only</font> 
+in compliance with the fair use doctrine. </b></i></p>
+
+<p><em>FAIR USE NOTICE </em>This site contains 
+		copyrighted material the use of which has not always been specifically 
+		authorized by the copyright owner. We are making such material available 
+		to advance understanding of computer science, IT technology, economic, scientific, and social  
+		issues. We believe this constitutes a 'fair use' of any such 
+		copyrighted material as provided by section 107 of the US Copyright Law according to which 
+such material can be distributed without profit exclusively for research and educational purposes.</p>
+
+<p><b>This is a Spartan WHYFF (We Help You For Free) 
+site written by people for whom English is not a native language.</b> Grammar and spelling errors should 
+be expected. <b>The site contain some broken links as it develops like a living tree...</b></p>
+
+<table border="0" width="100%">
+<tr>
+<td><font face="Verdana" size="1">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</font></td>
+<td><font face="Verdana" size="1">You can use PayPal to make a contribution, supporting development 
+of this site and speed up access. In case softpanorama.org is down currently there are 
+two functional mirrors: softpanorama.info (the fastest) and softpanorama.net.</font></td>
+</tr>
+</table>
+
+<p><b>Disclaimer:</b> </p>
+
+<p><i>The statements, views and opinions presented on this web page are those of the author (or 
+referenced source) and are 
+not endorsed by, nor do they necessarily reflect, the opinions of the author present and former employers, SDNP or any other organization the author may be associated with.</i> <i>We do not warrant the correctness 
+of the information provided or its fitness for any purpose.</i></p>
+</font>
+<p><i>Last modified:
+<!--webbot bot="Timestamp" s-type="EDITED" s-format="%B, %d, %Y" startspan -->July, 18, 2014<!--webbot bot="Timestamp" i-checksum="16880" endspan -->
+
+</body>
+
+</html>

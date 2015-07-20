@@ -1,0 +1,888 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>  50+ best practices to optimize PHP code performance | _MD_ ProductionS</title>
+
+<link rel="stylesheet" href="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/style.css" type="text/css" media="screen" />
+<link rel="alternate" type="application/rss+xml" title="_MD_ ProductionS RSS Feed" href="http://www.mdproductions.ca/feed" />
+<link rel="alternate" type="application/atom+xml" title="_MD_ ProductionS Atom Feed" href="http://www.mdproductions.ca/feed/atom" />
+<link rel="pingback" href="http://www.mdproductions.ca/xmlrpc.php" />
+
+
+
+
+	<style type="text/css">
+		div#fancybox-close{right:-15px;top:-12px}
+		div#fancybox-content{border-color:#FFFFFF}
+		div#fancybox-title{background-color:#FFFFFF}
+		div#fancybox-outer{background-color:#FFFFFF}
+		div#fancybox-title-inside{color:#333333}
+	</style>
+
+					<style type="text/css" media="screen" >
+					.socialwrap li.icon_text a img, .socialwrap li.iconOnly a img, .followwrap li.icon_text a img, .followwrap li.iconOnly a img{border-width:0 !important;background-color:none;}#follow.right {width:32px;position:fixed; right:0; top:100px;background-color:#878787;padding:10px 0;font-family:impact,charcoal,arial, helvetica,sans-serif;-moz-border-radius-topleft: 5px;-webkit-border-top-left-radius:5px;-moz-border-radius-bottomleft:5px;-webkit-border-bottom-left-radius:5px;border:2px solid #fff;border-right-width:0}#follow.right ul {padding:0; margin:0; list-style-type:none !important;font-size:24px;color:black;}
+#follow.right ul li {padding-bottom:10px;list-style-type:none !important;padding-left:4px;padding-right:4px}
+#follow img{border:none;}#follow.right ul li.follow {margin:0 4px;}
+#follow.right ul li.follow img {border-width:0;display:block;overflow:hidden; background:transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/impact/follow-right.png) no-repeat -0px 0px;height:79px;width:20px;}
+#follow.right ul li a {display:block;}
+#follow.right ul li.follow span, #follow ul li a span {display:none}.share {margin:0 3px 3px 0;}
+.phat span {display:inline;}
+ul.row li {float:left;list-style-type:none;}
+li.iconOnly a span.head {display:none}
+#follow.left ul.size16 li.follow{margin:0px auto !important}
+li.icon_text a {padding-left:0;margin-right:3px}
+li.text_only a {background-image:none !important;padding-left:0;}
+li.text_only a img {display:none;}
+li.icon_text a span{background-image:none !important;padding-left:0 !important; }
+li.iconOnly a span.head {display:none}
+ul.socialwrap li {margin:0 3px 3px 0 !important;}
+ul.socialwrap li a {text-decoration:none;}ul.row li {float:left;line-height:auto !important;}
+ul.row li a img {padding:0}.size16 li a,.size24 li a,.size32 li a, .size48 li a, .size60 li a {display:block}ul.socialwrap {list-style-type:none !important;margin:0; padding:0;text-indent:0 !important;}
+ul.socialwrap li {list-style-type:none !important;background-image:none;padding:0;list-style-image:none !important;}
+ul.followwrap {list-style-type:none !important;margin:0; padding:0}
+ul.followwrap li {margin-right:3px;margin-bottom:3px;list-style-type:none !important;}
+#follow.right ul.followwrap li, #follow.left ul.followwrap li {margin-right:0px;margin-bottom:0px;}
+.shareinpost {clear:both;padding-top:5px}.shareinpost ul.socialwrap {list-style-type:none !important;margin:0 !important; padding:0 !important}
+.shareinpost ul.socialwrap li {padding-left:0 !important;background-image:none !important;margin-left:0 !important;list-style-type:none !important;text-indent:0 !important}
+.socialwrap li.icon_text a img, .socialwrap li.iconOnly a img{border-width:0}ul.followrap li {list-style-type:none;list-style-image:none !important;}
+div.clean {clear:left;}
+div.display_none {display:none;}
+				</style>
+									<style type="text/css" media="print" >
+						body {background: white;font-size: 12pt;color:black;}
+ * {background-image:none;}
+ #wrapper, #content {width: auto;margin: 0 5%;padding: 0;border: 0;float: none !important;color: black;background: transparent none;}
+ a { text-decoration : underline; color : #0000ff; }
+#menu, #navigation, #navi, .menu {display:none}
+					</style>
+					<link rel="image_src" href="http://www.mdproductions.ca/images/M.gif" /> 
+<link rel="alternate" type="application/rss+xml" title="_MD_ ProductionS &raquo; 50+ best practices to optimize PHP code performance Comments Feed" href="http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance/feed" />
+<meta content="GentleBreeze v.1.0" name="generator"/><link media="screen" type="text/css" href="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/epanel/page_templates/js/fancybox/jquery.fancybox-1.2.6.css" rel="stylesheet" />
+<link media="screen" type="text/css" href="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/epanel/page_templates/page_templates.css" rel="stylesheet" /><link rel='stylesheet' id='fancybox-css'  href='http://www.mdproductions.ca/wp-content/plugins/fancybox-for-wordpress/fancybox/fancybox.css?ver=3.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='wp_dlmp_styles-css'  href='http://www.mdproductions.ca/wp-content/plugins/download-monitor/page-addon/styles.css?ver=3.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='featured-post-css-css'  href='http://www.mdproductions.ca/wp-content/plugins/featured-post-with-thumbnail/featured-post.css?ver=3.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='shortcodesStyleSheets-css'  href='http://www.mdproductions.ca/wp-content/themes/GentleBreeze/epanel/shortcodes/shortcodes.css?ver=3.3.1' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.mdproductions.ca/wp-content/plugins/md_gallery/js/md_gallery.js?ver=3.3.1'></script>
+<script type='text/javascript' src='http://www.mdproductions.ca/wp-includes/js/comment-reply.js?ver=20090102'></script>
+<script type='text/javascript' src='http://www.mdproductions.ca/wp-content/plugins/fancybox-for-wordpress/js/jquery.easing.1.3.min.js?ver=1.3'></script>
+<script type='text/javascript' src='http://www.mdproductions.ca/wp-includes/js/jquery/jquery.js?ver=1.7.1'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.mdproductions.ca/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.mdproductions.ca/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='IBM: We&#8217;re on the cusp of the Quantum Computing revolution' href='http://www.mdproductions.ca/news/ibm-were-on-the-cusp-of-the-quantum-computing-revolution' />
+<link rel='next' title='Creative resumes and CVs (24pics)' href='http://www.mdproductions.ca/news/creative-resumes-and-cvs' />
+<meta name="generator" content="WordPress 3.3.1" />
+<link rel='canonical' href='http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance' />
+<link rel='shortlink' href='http://www.mdproductions.ca/?p=3875' />
+<script type="text/javascript" src="http://www.mdproductions.ca/wp-content/plugins/audio-player/assets/audio-player.js?ver=2.0.4.6"></script>
+<script type="text/javascript">AudioPlayer.setup("http://www.mdproductions.ca/wp-content/plugins/audio-player/assets/player.swf?ver=2.0.4.6", {width:"405",animation:"no",encode:"yes",initialvolume:"60",remaining:"no",noinfo:"no",buffer:"5",checkpolicy:"no",rtl:"no",bg:"E5E5E5",text:"333333",leftbg:"CCCCCC",lefticon:"333333",volslider:"666666",voltrack:"FFFFFF",rightbg:"B4B4B4",rightbghover:"999999",righticon:"333333",righticonhover:"FFFFFF",track:"FFFFFF",loader:"009900",border:"CCCCCC",tracker:"DDDDDD",skip:"666666",pagebg:"FFFFFF",transparentpagebg:"yes"});</script>
+	<style type='text/css'>
+	.download-info .download-button {
+		background-image: url(http://www.mdproductions.ca/wp-content/plugins/download-monitor/page-addon/downloadbutton.gif);
+	}
+	.download-info .more-button {
+		background-image: url(http://www.mdproductions.ca/wp-content/plugins/download-monitor/page-addon/morebutton.gif);
+	}
+	</style>
+
+<!-- Fancybox for WordPress v3.0.1 -->
+<script type="text/javascript">
+jQuery(function(){
+
+jQuery.fn.getTitle = function() { // Copy the title of every IMG tag and add it to its parent A so that fancybox can show titles
+	var arr = jQuery("a.fancybox");
+	jQuery.each(arr, function() {
+		var title = jQuery(this).children("img").attr("title");
+		jQuery(this).attr('title',title);
+	})
+}
+
+// Supported file extensions
+var thumbnails = jQuery("a:has(img)").filter( function() { return /(jpe?g|png|gif|bmp)$/i.test(jQuery(this).attr('href')) });
+
+thumbnails.addClass("fancybox").attr("rel","fancybox").getTitle();
+
+jQuery("a.fancybox").fancybox({
+	'cyclic': true,
+	'autoScale': true,
+	'padding': 10,
+	'opacity': true,
+	'speedIn': 500,
+	'speedOut': 500,
+	'changeSpeed': 300,
+	'overlayShow': true,
+	'overlayOpacity': "0.3",
+	'overlayColor': "#666666",
+	'titleShow': true,
+	'titlePosition': 'inside',
+	'enableEscapeButton': true,
+	'showCloseButton': true,
+	'showNavArrows': true,
+	'hideOnOverlayClick': true,
+	'hideOnContentClick': false,
+	'width': 560,
+	'height': 340,
+	'transitionIn': "fade",
+	'transitionOut': "fade",
+	'centerOnScroll': true,
+	'easingIn': "easeOutQuad",
+	'easingOut': "easeInBack",
+	'easingChange': "easeInOutQuart"
+});
+		
+
+})
+</script>
+<!-- END Fancybox for WordPress -->
+<link type="text/css" rel="stylesheet" href="http://www.mdproductions.ca/wp-content/plugins/md_gallery/md_gallery.css" />
+
+<!-- Plugin: Open external links a new window. Plugin by Kristian Risager Larsen, http://kristianrisagerlarsen.dk . Download it at http://wordpress.org/extend/plugins/open-external-links-in-a-new-window/ -->
+<script type="text/javascript">//<![CDATA[
+	function external_links_in_new_windows_loop() {
+		if (!document.links) {
+			document.links = document.getElementsByTagName('a');
+		}
+		var change_link = false;
+		var force = '';
+		var ignore = '';
+
+		for (var t=0; t<document.links.length; t++) {
+			var all_links = document.links[t];
+			change_link = false;
+			
+			if(document.links[t].hasAttribute('onClick') == false) {
+				// forced if the address starts with http (or also https), but does not link to the current domain
+				if(all_links.href.search(/^http/) != -1 && all_links.href.search('www.mdproductions.ca') == -1) {
+					// alert('Changeda '+all_links.href);
+					change_link = true;
+				}
+					
+				if(force != '' && all_links.href.search(force) != -1) {
+					// forced
+					// alert('force '+all_links.href);
+					change_link = true;
+				}
+				
+				if(ignore != '' && all_links.href.search(ignore) != -1) {
+					// alert('ignore '+all_links.href);
+					// ignored
+					change_link = false;
+				}
+
+				if(change_link == true) {
+					// alert('Changed '+all_links.href);
+					document.links[t].setAttribute('onClick', 'javascript:window.open(\''+all_links.href+'\'); return false;');
+					document.links[t].removeAttribute('target');
+				}
+			}
+		}
+	}
+	
+	// Load
+	function external_links_in_new_windows_load(func)
+	{	
+		var oldonload = window.onload;
+		if (typeof window.onload != 'function'){
+			window.onload = func;
+		} else {
+			window.onload = function(){
+				oldonload();
+				func();
+			}
+		}
+	}
+
+	external_links_in_new_windows_load(external_links_in_new_windows_loop);
+	//]]></script>
+
+
+<link rel="stylesheet" href="http://www.mdproductions.ca/wp-content/plugins/wp-synhighlight/themes/mdproductions/wp-synhighlighter.css" type="text/css" media="screen" />
+
+<script type="text/javascript" src="http://www.mdproductions.ca/wp-content/plugins/wp-synhighlight/themes/mdproductions/wp-synhighlighter.js"></script>
+	<script type='text/javascript'>
+	// <![CDATA[
+	
+		<!---- et_switcher plugin v2 ---->
+		(function($)
+		{
+			$.fn.et_shortcodes_switcher = function(options)
+			{
+				var defaults =
+				{
+				   slides: '>div',
+				   activeClass: 'active',
+				   linksNav: '',
+				   findParent: true, //use parent elements to define active states
+				   lengthElement: 'li', //parent element, used only if findParent is set to true
+				   useArrows: false,
+				   arrowLeft: 'a#prev-arrow',
+				   arrowRight: 'a#next-arrow',
+				   auto: false,
+				   autoSpeed: 5000,
+				   slidePadding: '',
+				   pauseOnHover: true,
+				   fx: 'fade',
+				   sliderType: ''
+				};
+
+				var options = $.extend(defaults, options);
+
+				return this.each(function()
+				{
+									
+					var slidesContainer = jQuery(this).parent().css('position','relative'),
+						$slides = jQuery(this).css({'overflow':'hidden','position':'relative'}),
+						$slide = $slides.find(options.slides).css({'opacity':'1','position':'absolute','top':'0px','left':'0px','display':'none'}),
+						slidesNum = $slide.length,
+						zIndex = slidesNum,
+						currentPosition = 1,
+						slideHeight = 0,
+						$activeSlide,
+						$nextSlide;
+					
+					if (options.fx === 'slide') {
+						$slide.css({'opacity':'0','position':'absolute','top':'0px','left':'0px','display':'block'});
+					} else {
+						$slide.filter(':first').css({'display':'block'});
+					}
+					
+					if (options.slidePadding != '') $slide.css('padding',options.slidePadding);
+					
+					$slide.each(function(){
+						jQuery(this).css('z-index',zIndex).addClass('clearfix');
+						if (options.fx === 'slide') zIndex--;
+						
+						slideH = jQuery(this).innerHeight();
+						if (slideH > slideHeight) slideHeight = slideH;
+					});
+					$slides.css('height', slideHeight);
+					$slides.css('width', $slides.width());
+									
+					var slideWidth = $slide.width(),
+						slideOuterWidth = $slide.outerWidth();
+					
+					$slide.css('width',slideWidth);
+					
+					$slide.filter(':first').css('opacity','1');
+					
+					if (options.sliderType != '') {
+						if (options.sliderType === 'images') {
+							controllersHtml = '<div class="controllers-wrapper"><div class="controllers"><a href="#" class="left-arrow">Previous</a>';
+							for ($i=1; $i<=slidesNum; $i++) {
+								controllersHtml += '<a class="switch" href="#">'+$i+'</a>';
+							}
+							controllersHtml += '<a href="#" class="right-arrow">Next</a></div><div class="controllers-right"></div></div>';		
+							$controllersWrap = jQuery(controllersHtml).prependTo($slides.parent());
+							jQuery('.controllers-wrapper .controllers').css('width', 65 + 18*slidesNum);
+						}
+						
+						var etimage_width = $slide.width();
+			
+						slidesContainer.css({'width':etimage_width});
+						$slides.css({'width':etimage_width});
+						
+						if (options.sliderType === 'images') {
+							slidesContainer.css({'height':$slide.height()});
+							$slides.css({'height':$slide.height()});
+							
+							var controllers_width = $controllersWrap.width(),
+							leftPosition = Math.round((etimage_width - controllers_width) / 2);
+						
+							$controllersWrap.css({left: leftPosition});
+						}	
+					}
+					
+					
+					if (options.linksNav != '') {
+						var linkSwitcher = jQuery(options.linksNav);
+						
+						var linkSwitcherTab = '';
+						if (options.findParent) linkSwitcherTab = linkSwitcher.parent();
+						else linkSwitcherTab = linkSwitcher;
+						
+						if (!linkSwitcherTab.filter('.active').length) linkSwitcherTab.filter(':first').addClass('active');
+										
+						linkSwitcher.click(function(){
+							
+							var targetElement;
+
+							if (options.findParent) targetElement = jQuery(this).parent();
+							else targetElement = jQuery(this);
+							
+							var orderNum = targetElement.prevAll(options.lengthElement).length+1;
+							
+							if (orderNum > currentPosition) gotoSlide(orderNum, 1);
+							else gotoSlide(orderNum, -1); 
+							
+							return false;
+						});
+					}
+					
+					
+					if (options.useArrows) {
+						var $right_arrow = jQuery(options.arrowRight),
+							$left_arrow = jQuery(options.arrowLeft);
+											
+						$right_arrow.click(function(){				
+							if (currentPosition === slidesNum) 
+								gotoSlide(1,1);
+							else 
+								gotoSlide(currentPosition+1),1;
+							
+							if (options.linksNav != '') changeTab();
+													
+							return false;
+						});
+						
+						$left_arrow.click(function(){
+							if (currentPosition === 1)
+								gotoSlide(slidesNum,-1);
+							else 
+								gotoSlide(currentPosition-1,-1);
+							
+							if (options.linksNav != '') changeTab();
+							
+							return false;
+						});
+						
+					}
+					
+									
+					function changeTab(){
+						if (linkSwitcherTab != '') { 
+							linkSwitcherTab.siblings().removeClass('active');
+							linkSwitcherTab.filter(':eq('+(currentPosition-1)+')').addClass('active');
+						}
+					}
+					
+					function gotoSlide(slideNumber,dir){
+						if ($slide.filter(':animated').length) return;
+					
+						$slide.css('opacity','0');
+																			
+						$activeSlide = $slide.filter(':eq('+(currentPosition-1)+')').css('opacity','1');
+										
+						if (currentPosition === slideNumber) return;
+										
+						$nextSlide = $slide.filter(':eq('+(slideNumber-1)+')').css('opacity','1');
+										
+						if ((currentPosition > slideNumber || currentPosition === 1) && (dir === -1)) {
+							if (options.fx === 'slide') slideBack(500);
+							if (options.fx === 'fade') slideFade(500);
+						} else {
+							if (options.fx === 'slide') slideForward(500);
+							if (options.fx === 'fade') slideFade(500);
+						}
+						
+						currentPosition = $nextSlide.prevAll().length + 1;
+						
+						if (options.linksNav != '') changeTab();
+						
+						if (typeof interval != 'undefined' && options.auto) {
+							clearInterval(interval);
+							auto_rotate();
+						}
+											
+						return false;
+					}
+					
+					
+					if (options.auto) {
+						auto_rotate();
+						var pauseSlider = false;
+					}
+					
+					if (options.pauseOnHover) { 				
+						slidesContainer.hover(function(){
+							pauseSlider = true;
+						},function(){
+							pauseSlider = false;
+						});
+					}
+					
+					function auto_rotate(){
+						
+						interval = setInterval(function(){
+							if (!pauseSlider) { 
+								if (currentPosition === slidesNum) 
+									gotoSlide(1,1);
+								else 
+									gotoSlide(currentPosition+1),1;
+								
+								if (options.linksNav != '') changeTab();
+							}
+						},options.autoSpeed);
+						
+					}
+					
+					function slideForward(speed){
+						$nextSlide.css('left',slideOuterWidth+'px');
+						$activeSlide.animate({left: '-'+slideOuterWidth},speed);
+						$nextSlide.animate({left: 0},speed);
+					}
+					
+					function slideBack(speed){
+						$nextSlide.css('left','-'+slideOuterWidth+'px');
+						$activeSlide.animate({left: slideOuterWidth},speed);
+						$nextSlide.animate({left: 0},speed);
+					}
+					
+					function slideFade(speed){					
+						$activeSlide.css({zIndex: slidesNum}).fadeOut(700);
+						$nextSlide.css({zIndex: (slidesNum+1)}).fadeIn(700);
+					}
+					
+				});
+			} 
+		})(jQuery);
+		<!---- end et_switcher plugin v2 ---->
+		
+		/////// Shortcodes Javascript ///////
+		
+		/// tooltip ///
+		
+		$et_tooltip = jQuery('.et-tooltip');
+		
+		$et_tooltip.live('mouseover mouseout', function(event){
+			if (event.type == 'mouseover') {
+				jQuery(this).find('.et-tooltip-box').animate({ opacity: 'show', bottom: '25px' }, 300);
+			} else {
+				jQuery(this).find('.et-tooltip-box').animate({ opacity: 'hide', bottom: '35px' }, 300);
+			}
+		});
+		
+		/// learn more ///
+		
+		$et_learn_more = jQuery('.et-learn-more .heading-more');
+		
+		$et_learn_more.live('click', function() {
+			if ( jQuery(this).hasClass('open') ) 
+				jQuery(this).removeClass('open');
+			else 
+				jQuery(this).addClass('open');
+				
+			jQuery(this).parent('.et-learn-more').find('.learn-more-content').animate({ opacity: 'toggle', height: 'toggle' }, 300);
+		});
+	
+	// ]]>
+	</script>
+<link rel="shortcut icon" href="/images/M.gif" /><script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20828278-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script><!--[if lt IE 7]>
+    <link rel="stylesheet" type="text/css" href="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/css/ie6style.css" />
+    <script type="text/javascript" src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/js/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script type="text/javascript">DD_belatedPNG.fix('img#logo, .slider_image img, .banner, .banner .readmore, .wrap .image img, .thumb div .image img, div.avatar span.overlay');</script>
+<![endif]--> 
+<!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/css/ie7style.css" />
+<![endif]--> 
+
+<script src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/js/fancybox.js" type="text/javascript"></script> 
+<script src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/js/easing.js" type="text/javascript"></script> 
+<script src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/js/cufon-yui.js" type="text/javascript"></script> 
+<script src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/js/superfish.js" type="text/javascript"></script> 
+</head>
+<body>
+<div class="wrapper">
+  <a href="http://www.mdproductions.ca">	<img src="/images/logo.png" alt="Logo" id="logo"/></a>
+    
+    <div id="navwrap">
+        <span class="nav_top"></span>
+		            <ul class="nav superfish" style="padding-left:226px">
+                                    <li ><a href="http://www.mdproductions.ca">Home</a></li>
+                                
+                <li class="page_item page-item-2"><a href="http://www.mdproductions.ca/about">About</a></li>
+<li class="page_item page-item-119"><a href="http://www.mdproductions.ca/blog">Blog</a></li>
+<li class="page_item page-item-236"><a href="http://www.mdproductions.ca/contact">Contact</a></li>
+<li class="page_item page-item-132"><a href="http://www.mdproductions.ca/photography">Photography</a>
+<ul class='children'>
+	<li class="page_item page-item-151"><a href="http://www.mdproductions.ca/photography/architecture">Architecture</a></li>
+	<li class="page_item page-item-142"><a href="http://www.mdproductions.ca/photography/hdr">HDR</a></li>
+	<li class="page_item page-item-159"><a href="http://www.mdproductions.ca/photography/panorama">Panorama</a></li>
+	<li class="page_item page-item-157"><a href="http://www.mdproductions.ca/photography/photoshoots">Photoshoots</a></li>
+	<li class="page_item page-item-154"><a href="http://www.mdproductions.ca/photography/random">Random</a></li>
+	<li class="page_item page-item-2142"><a href="http://www.mdproductions.ca/photography/weddings">Weddings</a></li>
+</ul>
+</li>
+<li class="page_item page-item-134"><a href="http://www.mdproductions.ca/videography">Videography</a></li>
+                					
+            </ul> <!-- end ul.nav -->
+                
+                <br class="clear" />
+        <span class="nav_bottom"></span>
+    </div><!-- #navwrap --> 	<div id="content">
+    	<div class="content_wrap">
+            <div class="content_wrap">
+            	<div id="posts">
+                    <div id="breadcrumbs">
+                        			<a href="http://www.mdproductions.ca">Home</a> <span class="separate">&raquo;</span>
+			
+							<a href="http://www.mdproductions.ca/category/guides">Guides </a><span class="separate">&raquo;</span> 50+ best practices to optimize PHP code performance			                    </div>
+					                    
+                    <div class="post">
+		
+	<div class="text no_thumb">
+		<h2>50+ best practices to optimize PHP code performance</h2>
+		<span class="postinfo">
+			<span class="line"></span>
+			Posted  by <a href="http://www.mdproductions.ca/author/_MD_" title="Posts by _MD_" rel="author">_MD_</a> on Mar 1, 2012 in <a href="http://www.mdproductions.ca/category/guides" title="View all posts in Guides" rel="category tag">Guides</a> | <a href="http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance#comments" title="Comment on 50+ best practices to optimize PHP code performance"><div class="interactive_right" style="float:right; padding-bottom: 15px; margin-top: -1px;" ><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;layout=button_count&amp;show_faces=false&amp;width=70&amp;action=like&amp;font=segoe ui&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:70px; height:21px;" allowTransparency="true"></iframe></div>1 comment</a>			<span class="line"></span>
+		</span>
+		</div>
+			<!---Random Image displayed in 0.079021 seconds.-->
+<div style="float:right;padding: 0 0 10px 10px" class="interactive_right"></div><p><a href="http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance"><img class="alignnone" title="PHP" src="http://www.mdproductions.ca/wp-content/uploads/2012/02/php.jpg" alt="" width="640" height="480" /></a></p>
+<p>Like any scripting language, PHP can be used in a variety of applications. The down-side for most programmers is that when they learn how to write PHP, they do not always learn how to write PHP with speed and optimization in mind. This article addresses most common ways you can improve your code with minor changes that will yield large gains as well as teach you how to become a better PHP developer.</p>
+<p><span id="more-3875"></span></p>
+<p>One of the most important things you can do when improving PHP application performance is begin measuring your application to find a baseline performance time for different parts of your application. If you do not know which parts of your application are slow or have bottlenecks, you will not know where to begin optimizing your code for better performance. There are many commercial and free applications that can be used to measure PHP performance. See the article <strong><a title="PHP Profilers Compared" href="http://www.learncomputer.com/php-profilers/">PHP Profilers Compared</a></strong> for further information.</p>
+<p>&nbsp;</p>
+<ul>
+<li>If a method can be static, declare it static. Speed improvement is by a factor of 4.</li>
+<li><strong><span style="color: #000000;"><a href="http://php.net/manual/en/function.echo.php">echo</a></span></strong> is faster than print, use echo&#8217;s multiple parameters instead of string concatenation.</li>
+<li>Set the max value for your for-loops <span style="text-decoration: underline;">before</span> and not as a function in the loop: <span style="color: #3399ff;"><br />
+	<code>$len = count($big_array); for ($i=0; $i&lt;$len; $i++) {...}</code></span></li>
+<li>Unset your variables to free memory, especially large arrays.</li>
+<li>Avoid <strong><a href="http://php.net/manual/en/language.oop5.overloading.php">magic methods</a></strong> like<span style="color: #008000;"> __get()</span>, <span style="color: #008000;">__set()</span> and <span style="color: #008000;">__autoload()</span></li>
+<li>To find out the time when the script started executing, <span style="color: #008000;">$_SERVER['<span style="color: #ff9900;">REQUEST_TIME</span>']</span> is preferred to <a href="http://php.net/manual/en/function.time.php"><strong>time()</strong></a></li>
+<li>See if you can use <a href="http://php.net/manual/en/function.strncasecmp.php"><strong>strncasecmp</strong></a>, <a href="http://php.net/manual/en/function.strpbrk.php"><strong>strpbrk</strong></a> and <a href="http://php.net/manual/en/function.stripos.php"><strong>stripos</strong></a> instead of <a href="http://www.regular-expressions.info/reference.html"><strong>regex</strong></a>
+<li><a href="http://php.net/manual/en/function.strtr.php"><strong>strtr</strong></a> is faster than <a href="http://php.net/manual/en/function.str-replace.php"><strong>str_replace</strong></a> by a <span style="text-decoration: underline;">factor of 4</span></li>
+<li>It&#8217;s better to use select statements (<span style="color: #008000;">switch() { case &#8221;: }</span>) than multi <span style="color: #008000;">if</span> and <span style="color: #008000;">else if</span> statements.</li>
+<li>Error suppression with <span style="color: #008000;">@</span> is <span style="text-decoration: underline;">very</span> slow.</li>
+<li>Turn on apache&#8217;s <a href="http://httpd.apache.org/docs/2.0/mod/mod_deflate.html"><strong>mod_deflate</strong></a></li>
+<li><a href="http://schroepl.net/projekte/mod_gzip/"><strong>mod_gzip</strong></a> which is available as an Apache module, compresses your data on the fly<br />
+	and can reduce the data to transfer up to 80%</li>
+<li>Close your database connections when you&#8217;re done with them<br />
+	(although PHP does it for you upon full page load or end of script execution)</li>
+<li>Use single quotes in indexes: <span style="color: #008000;">$row['<span style="color: #ff9900;">id</span>']</span> is 7 times faster than <span style="color: #008000;">$row[id]</span></li>
+<li>Use <a href="http://php.net/manual/en/function.sprintf.php"><strong>sprintf</strong></a> instead of variables contained in double quotes, it’s about 10x faster.</li>
+<li>Incrementing a local variable in a method is the fastest. Nearly the same as calling a local variable in a function.</li>
+<li>Incrementing a global variable is 2 times slower than a local var.</li>
+<li>Incrementing an object property (eg. <span style="color: #008000;">$this-&gt;prop++</span>) is 3 times slower than a local variable.</li>
+<li>Incrementing an undefined local variable is 9-10 times slower than a pre-initialized one.</li>
+<li>Just declaring a global variable without using it in a function also slows things down (by the same amount as incrementing a local var). PHP does a pricy check to see if the global exists.</li>
+<li>Methods in derived classes run faster than ones defined in the base class.</li>
+<li>A function call with one parameter and an empty function body takes about the same time as doing 7-8 <span style="color: #008000;">$localvar++</span> operations. A similar <span style="text-decoration: underline;">method call</span> is of course about 15 <span style="color: #008000;">$localvar++</span> operations.</li>
+<li>Surrounding your string by <span style="color: #008000;">&#8216;</span> instead of <span style="color: #008000;">&#8220;</span> will make things interpret a little faster since php looks for variables inside <span style="color: #008000;">&#8220;…&#8221;</span> but not inside <span style="color: #008000;">&#8216;…&#8217;</span>.</li>
+<li>When working with strings and you need to check that the string is of a certain length, you&#8217;d understandably would want to use the <a href="http://php.net/manual/en/function.strlen.php"><strong>strlen()</strong></a> function. This function is pretty quick since it&#8217;s operation does not perform any calculation but merely returns the already known length of a string available in the <em>zval</em> structure (internal C struct used to store variables in PHP). However because <span style="color: #008000;">strlen()</span> is a function it is still somewhat slow because the function call requires several operations such as lowercase &amp; hashtable lookup followed by the execution of said function. In some instance you can improve the speed of your code by using an <a href="http://php.net/manual/en/function.isset.php"><strong>isset()</strong></a> trick.<strong></strong><br />
+<span style="color: #3399ff;"><code><code>if (!isset($foo{5})) { echo 'Foo is too short'; } ?</code>&gt;</code></span><br />
+<em>instead of</em><br />
+<span style="color: #3399ff;"><code>if (strlen($foo) &lt; 5) { echo 'Foo is too short'; }</code> ?&gt;</span><br />
+Calling <span style="color: #008000;">isset()</span> happens to be faster then <span style="color: #008000;">strlen()</span> because unlike <span style="color: #008000;">strlen()</span>, <span style="color: #008000;">isset()</span> is a language construct and not a function meaning that it&#8217;s execution does not require function lookups and lowercase. You&#8217;ll have no overhead on top of the actual code that determines the string&#8217;s length.</li>
+<li>When incrementing or decrementing the value of the variable <span style="color: #008000;">$i++</span> happens to be a much slower then <span style="color: #008000;">++$i</span>. It is because instead of 4 opcodes used for <span style="color: #008000;">$i++</span> you only need 3. Post incrementation actually causes the creation of a temporary var that is then incremented while pre-incrementation increases the original value directly. This is one of the optimization that opcode optimizer such as Zend&#8217;s PHP optimizer utilizes.</li>
+<li>Use <a href="http://php.net/manual/en/function.array-pad.php"><strong>array_pad()</strong></a>. A common case when assigning multiple variables from an array is to use the <a href="http://php.net/manual/en/function.list.php"><strong>list()</strong></a> construct with the <a href="http://php.net/manual/en/function.explode.php"><strong>explode()</strong></a> function to split the string and set the parts of the list to each variable like so: <span style="color: #3399ff;"><code>list($foo1, $foo2, $foo3) = explode('/', 'var1/var2/var3');</code></span> However, the problem is then created where you may not be bringing in as many variables for each part of the list. If you are missing a variable or two when you explode, you will get a nice notice from PHP. The usual response to this is to use the error suppression operator to dismiss the error (<span style="color: #008000;">@list()</span>). In this case, <span style="color: #008000;">$foo3</span> will be set to <span style="color: #008000;">NULL</span> and your script will suffer a speed penalty for use of the <span style="color: #008000;">@</span> operator. To alleviate this problem it is better to use <span style="color: #008000;">array_pad</span> to only fill the array with the number of variables that you have instead of causing and suppressing an error at the cost of your performance.<br />
+	<span style="color: #3399ff;"><code>list($foo1, $foo2, $foo3) = array_pad(explode('/', 'var1/var2'), 4, NULL);</code></span></li>
+<li>Not everything has to be OOP, often it is too much overhead, each method and object call consumes a lot of memory.</li>
+<li>Do not implement every data structure as a class &#8212; arrays are useful too</li>
+<li>If you have very time consuming functions in your code, consider writing them as C extensions</li>
+<li>Profile your code. A profiler shows you, which parts of your code consumes how many time. The Xdebug debugger already contains a profiler. Profiling shows you the bottlenecks in overview</li>
+<li><strong><a href="http://phplens.com/lens/php-book/optimizing-debugging-php.php" target="_blank">Excellent article</a></strong> about optimizing your PHP code by John Lim</li>
+<li>Do use <span style="color: #008000;">foreach</span> for looping collections/arrays. PHP4 items are byval, &lt; PHP5 items are byref</li>
+<li>Do consider using the <a href="http://php.net/manual/en/language.oop5.patterns.php"><strong>Singleton Pattern</strong></a> as you will have only one instance of an object.</li>
+<li>Do use <span style="color: #008000;">POST</span> over <span style="color: #008000;">GET</span> for all values that will wind up in the database for TCP/IP packet performance reasons.</li>
+<li>Do use <a href="http://php.net/manual/en/function.ctype-alnum.php"><strong>ctype_alnum</strong></a>, <a href="http://php.net/manual/en/function.ctype-alpha.php"><strong>ctype_alpha</strong></a> and <a href="http://php.net/manual/en/function.ctype-digit.php"><strong>ctype_digit</strong></a> over regular expression to test form value types for performance reasons.</li>
+<li>Do use full file paths in production environment over <a href="http://php.net/manual/en/function.basename.php"><strong>basename</strong></a>/<a href="http://php.net/manual/en/function.file-exists.php"><strong>file_exists</strong></a>/<a href="http://www.php.net/manual/en/ini.core.php#ini.open-basedir"><strong>open_basedir</strong></a> to avoid performance hits for the filesystem having to hunt through the file path. Once determined, <a href="http://php.net/manual/en/function.serialize.php"><strong>serialize</strong></a> and/or cache path values in a $_SETTINGS array. <span style="color: #008000;">$_SETTINGS['</span><span style="color: #ff9900;">cwd</span><span style="color: #008000;">'] = cwd(./);</span></li>
+<li>Do use <a href="http://php.net/manual/en/function.require.php"><strong>require</strong></a>/<a href="http://www.php.net/manual/en/function.include.php"><strong>include</strong></a> over <a href="http://www.php.net/manual/en/function.require-once.php"><strong>require_once</strong></a>/<a href="http://www.php.net/manual/en/function.include-once.php"><strong>include_once</strong></a> to ensure proper opcode caching.</li>
+<li>Do use <a href="http://php.net/manual/en/function.tmpfile.php"><strong>tmpfile</strong></a> or <a href="http://php.net/manual/en/function.tempnam.php"><strong>tempnam</strong></a> for creating temp files/filenames</li>
+<li>Do use a proxy to access web services (XML or JSOM) on foreign domains using XMLHTTP to avoid cross-domain errors. eg. <span style="color: #008000;">foo.com&lt;–&gt;XMLHTTP&lt;–&gt;bar.com</span></li>
+<li>Do use <a href="http://php.net/manual/en/function.error-reporting.php"><strong>error_reporting</strong></a>(E_ALL); during debug.</li>
+<li>Do set Apache <a href="http://httpd.apache.org/docs/2.0/mod/core.html"><strong>allowoverride</strong></a> to &#8220;none&#8221; to improve Apache performance in accessing files/directories.</li>
+<li>Do use a fast fileserver for serving static content (<a href="http://acme.com/software/thttpd/"><strong>thttpd</strong></a>) <span style="color: #008000;">static.mydomain.com, dynamic.mydomain.com</span></li>
+<li>Do <span style="color: #008000;">serialize</span> application settings like paths into an associative array and cache or <span style="color: #008000;">serialize</span> that array after first execution.</li>
+<li>Do use <a href="http://php.net/manual/en/function.ob-start.php"><strong>PHP output control</strong></a> buffering for page caching of heavily accessed pages</li>
+<li>Do use <a href="http://www.php.net/manual/en/intro.pdo.php"><strong>PDO</strong></a> (or a major PHP framework such as <a href="http://cakephp.org/"><strong>CakePHP</strong></a>, <a href="http://www.symfony-project.org/"><strong>Symfony</strong></a>, <a href="http://codeigniter.com/"><strong>CodeIgniter</strong></a>, <a href="http://www.yiiframework.com/"><strong>Yii</strong></a> or <a href="http://www.phpiphany.com"><strong>phpiphany</strong></a>) for prepared statements over native DB prepare. <span style="color: #008000;">mysql_attr_direct_query=&gt;1</span></li>
+<li>Do NOT use SQL wildcard selects. eg. SELECT * (although selecting <span style="text-decoration: underline;">all</span> columns manually yields same retrieval time as issuing SELECT *; therefore try to select only the columns you are actually going to use)</li>
+<li>Do use database logic (queries, joins, views, procedures) over loopy PHP.</li>
+<li>Use caching whenever possible. <strong><a href="http://www.mysqlperformanceblog.com/2006/08/09/cache-performance-comparison/">This article</a></strong> defines basic caching techniques. To sum it up, use arrays for caching big chunk of data in the memory directly. Use <a href="http://php.net/manual/en/book.apc.php"><strong>APC</strong></a> or <a href="http://en.wikipedia.org/wiki/EAccelerator"><strong>eAccelerator</strong></a> on a single server. Use memcache on multiple servers when you scale you application.</li>
+<li>APC being the fastest caching method does not scale well. <a href="http://redis.io/"><strong>Redis</strong></a> and <a href="http://memcached.org/"><strong>Memcache</strong></a> can be used for cross-process/multi-server communications. Data in Redis storage will remain even after a server reboot. Don&#8217;t want to install Redis (it&#8217;s just a 1 line in console)? Use Memcache. If you can&#8217;t install any third-party packages, you can use Shared Memory &#8211; but your PHP should be compiled with support of <a href="http://www.php.net/manual/en/shmop.installation.php"><strong>shmop-functions</strong></a>. If we take APC as our unit of measure in the following benchmark, we can draw the following conclusion:
+<ul>
+<li>APC &#8211; best performance &#8211; speed 1</li>
+<li>Redis &#8211; speed 1.6</li>
+<li>Shared memory &#8211; speed 130</li>
+<li>Memcache &#8211; speed 192 (slowest)</li>
+</ul>
+<p>	Head over to the <a href="http://www.ruturaj.net/redis-memcached-tokyo-tyrant-mysql-comparison"><strong>Redis VS Memcache</strong></a> comparison to see the stats in action.</li>
+<li>Here is <strong><a href="http://phpbench.com/">another interesting resource</a></strong> that provides comparison of most of the items listed above</li>
+<li>Lastly, follow <strong><a href="http://developer.yahoo.com/performance/rules.html">Yahoo performance rules</a></strong> for best practices on optimizing loading times of your website</li>
+</ul>
+<p><a href="http://www.chazzuka.com/63-best-practice-to-optimize-php-code-performances-58/">Source</a></p>
+<div class='shareinpost'><ul class="socialwrap row"><li class="iconOnly"><a rel="nofollow" target="_blank" href="http://digg.com/submit?url=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;title=50%2B+best+practices+to+optimize+PHP+code+performance&amp;bodytext=%0D%0A%0D%0ALike+any+scripting+language%2C+PHP+can+be+used+in+a+variety+of+applications.+The+down-side+for+most+programmers+is+that+when+they+learn+how+to+write+PHP%2C+they+do+not+always+learn+how+to+write+PHP+with+speed+and+optimization+in+mind.+This+article+addresses+most+common+ways+you+can+improve+your+code+with+minor+changes+" title="Digg this post : 50+ best practices to optimize PHP code performance" ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-264px 0px" class="image-32" width="32" alt="digg"/> <span class="head">Digg this post</span></a></li><li class="iconOnly"><a rel="nofollow" target="_blank" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;t=50%2B+best+practices+to+optimize+PHP+code+performance" title="Recommend this post : 50+ best practices to optimize PHP code performance on Facebook" ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-363px 0px" class="image-32" width="32" alt="facebook"/> <span class="head">Recommend on Facebook</span></a></li><li class="iconOnly"><a rel="nofollow" target="_blank" href="http://www.google.com/buzz/post?url=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;title=50%2B+best+practices+to+optimize+PHP+code+performance" title="Buzz up this post : 50+ best practices to optimize PHP code performance " ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-627px 0px" class="image-32" width="32" alt="google_buzz"/> <span class="head">Buzz it up</span></a></li><li class="iconOnly"><a rel="nofollow" target="_blank" href="http://www.reddit.com/submit?url=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;title=50%2B+best+practices+to+optimize+PHP+code+performance" title="Share this post : 50+ best practices to optimize PHP code performance on Reddit" ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-1419px 0px" class="image-32" width="32" alt="reddit"/> <span class="head">share via Reddit</span></a></li><li class="iconOnly"><a rel="nofollow" target="_blank" href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;title=50%2B+best+practices+to+optimize+PHP+code+performance" title="Share this post : 50+ best practices to optimize PHP code performance with Stumblers" ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-1617px 0px" class="image-32" width="32" alt="stumble"/> <span class="head">Share with Stumblers</span></a></li><li class="iconOnly"><a rel="nofollow" target="_blank" href="http://twitter.com/home/?status=50%2B+best+practices+to+optimize+PHP+code+performance+-+http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance" title="Tweet this post : 50+ best practices to optimize PHP code performance on Twitter" ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-1749px 0px" class="image-32"  width="32"  alt="twitter"/> <span class="head">Tweet about it</span></a></li><li class="iconOnly"><a rel="nofollow" target="_self" href="javascript:window.print();" title="Print this post : 50+ best practices to optimize PHP code performance for reading later" ><img src="http://www.mdproductions.ca/wp-content/plugins/share-and-follow/images/blank.png" height="32" style="background: transparent url(http://www.mdproductions.ca/wp-content/plugins/share-and-follow/default/32/sprite-32.png) no-repeat;padding:0;margin:0;height:32px;width:32px;background-position:-1386px 0px" class="image-32" width="32" alt="print"/> <span class="head">Print for later</span></a></li></ul><div class="clean"></div> </div>		<br class="clear" />
+						</div><!-- .post -->                      
+				<!-- You can start editing here. -->
+
+<div id="comment-wrap">
+
+	
+			<h2><div class="interactive_right" style="float:right; padding-bottom: 15px; margin-top: -1px;" ><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance&amp;layout=button_count&amp;show_faces=false&amp;width=70&amp;action=like&amp;font=segoe ui&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:70px; height:21px;" allowTransparency="true"></iframe></div>1 Comment</h2>
+		
+			<ol class="commentlist clearfix">
+			   <li class="comment even thread-even depth-1" id="li-comment-3526">
+   <div id="comment-3526" class="comment-body clearfix">
+		<div class="avatar">
+			<img alt='' src='http://0.gravatar.com/avatar/40f65e1bd3ed1b72cd883f1f03d4e14f?s=57&amp;d=identicon&amp;r=PG' class='avatar avatar-57 photo' height='57' width='57' />			<span class="overlay"></span>
+		</div>
+		
+		<div class="comment-wrap">
+			
+			<div class="comment-author vcard">
+				<span class="fn"><a href='http://www.wwwarchoscomregister.com' rel='external nofollow' class='url'>Archos.Com/Register</a></span> <div class="comment-meta commentmetadata"><a href="http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance#comment-3526">April 17, 2012</a></div>
+			</div>
+			
+						
+		    <div class="comment-content"><p>An  extra 1  stings  the  detritus, or at  minimal another blog  post bites  the dust. Your weblog rocks my article network  hold up the terrific   causes .</p>
+</div> <!-- end comment-content-->
+		    <div class="reply-container"><a rel="nofollow" class="comment-reply-login" href="http://www.mdproductions.ca/wp-login.php?redirect_to=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance">Log in to Reply</a></div>
+		</div> <!-- end comment-wrap-->  
+	</div> <!-- end comment-body-->
+	
+</li>
+		</ol>
+		
+		<div class="navigation">
+			<div class="alignleft">
+							</div>
+			<div class="alignright">
+							</div>
+		</div>
+		
+		
+
+	<div id="respond">
+		<h3 id="comments">
+			Leave a Reply		</h3>
+		<div class="cancel-comment-reply"> <small>
+			<a rel="nofollow" id="cancel-comment-reply-link" href="/guides/50-best-practices-to-optimize-php-code-performance#respond" style="display:none;">Click here to cancel reply.</a>			</small> </div> <!-- end cancel-comment-reply div -->
+					<p>You must be <a href="http://www.mdproductions.ca/wp-login.php?redirect_to=http%3A%2F%2Fwww.mdproductions.ca%2Fguides%2F50-best-practices-to-optimize-php-code-performance">logged in</a> to post a comment.</p>
+			</div> <!-- end respond div -->
+</div>                </div><!-- #posts -->  
+				<div id="sidebar">
+	
+		
+	<div class="widget">
+        <div id="search-bar"> 
+            <form method="get" id="searchform1" action="http://www.mdproductions.ca"> 
+                <input type="text" value="" name="s" id="searchinput" /> 
+
+                <input type="image" src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/images/search-submit.png" id="searchsubmit" /> 
+            </form> 
+        </div> <!-- #search-bar --> 
+     </div>
+<div class="widget"><h3>Calendar</h3><div id="calendar_wrap"><table id="wp-calendar">
+	<caption>July 2015</caption>
+	<thead>
+	<tr>
+		<th scope="col" title="Sunday">S</th>
+		<th scope="col" title="Monday">M</th>
+		<th scope="col" title="Tuesday">T</th>
+		<th scope="col" title="Wednesday">W</th>
+		<th scope="col" title="Thursday">T</th>
+		<th scope="col" title="Friday">F</th>
+		<th scope="col" title="Saturday">S</th>
+	</tr>
+	</thead>
+
+	<tfoot>
+	<tr>
+		<td colspan="3" id="prev"><a href="http://www.mdproductions.ca/2014/05" title="View posts for May 2014">&laquo; May</a></td>
+		<td class="pad">&nbsp;</td>
+		<td colspan="3" id="next" class="pad">&nbsp;</td>
+	</tr>
+	</tfoot>
+
+	<tbody>
+	<tr>
+		<td colspan="3" class="pad">&nbsp;</td><td>1</td><td>2</td><td>3</td><td>4</td>
+	</tr>
+	<tr>
+		<td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td>
+	</tr>
+	<tr>
+		<td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td>
+	</tr>
+	<tr>
+		<td id="today">19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
+	</tr>
+	<tr>
+		<td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td>
+		<td class="pad" colspan="1">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table></div></div> <!-- end .widget --><div class="widget"><h3>Categories</h3><div class="menu-_md_-custom-container"><ul id="menu-_md_-custom" class="menu"><li id="menu-item-2624" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2624"><a href="http://www.mdproductions.ca/articles">Articles</a></li>
+<li id="menu-item-960" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-960"><a href="http://www.mdproductions.ca/guides">Guides</a></li>
+<li id="menu-item-2628" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2628"><a href="http://www.mdproductions.ca/how-it-works">How It Works</a></li>
+<li id="menu-item-1787" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1787"><a href="http://www.mdproductions.ca/music">Music</a></li>
+</ul></div></div> <!-- end .widget --><div class="widget"><h3>Featured Posts</h3>	
+	<ul id="yiw-featured-post">
+	   <li>
+	       <a href="http://www.mdproductions.ca/news/dating-redefined" class="featured-thumb">
+	       	           <img src="http://www.mdproductions.ca/wp-content/plugins/featured-post-with-thumbnail/scripts/timthumb.php?src=http://www.mdproductions.ca/wp-content/uploads/2014/05/Lustaman.jpg&amp;h=50&amp;w=50&amp;zc=1" class="alignleft" alt="Dating 2.0 &#8212; online dating redefined" />
+	       	       </a>
+           
+           <h4 class="featured-title">
+	           <a href="http://www.mdproductions.ca/news/dating-redefined">Dating 2.0 &#8212; online dating redefined</a>
+	       </h4>
+	   </li>
+	   <li>
+	       <a href="http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance" class="featured-thumb">
+	                      <img src="http://www.mdproductions.ca/wp-content/plugins/featured-post-with-thumbnail/scripts/timthumb.php?src=http://www.mdproductions.ca/wp-content/uploads/2012/02/php-50x50.jpg&amp;h=50&amp;w=50&amp;zc=1" class="alignleft" alt="50+ best practices to optimize PHP code performance" />
+           
+	       	       </a>
+           
+           <h4 class="featured-title">
+	           <a href="http://www.mdproductions.ca/guides/50-best-practices-to-optimize-php-code-performance">50+ best practices to optimize PHP code performance</a>
+	       </h4>
+	   </li>
+	   <li>
+	       <a href="http://www.mdproductions.ca/guides/power-surge-burned-your-hdd-pcb-heres-how-to-recover" class="featured-thumb">
+	                      <img src="http://www.mdproductions.ca/wp-content/plugins/featured-post-with-thumbnail/scripts/timthumb.php?src=http://www.mdproductions.ca/wp-content/uploads/2011/05/burning-hard-drive-50x50.jpg&amp;h=50&amp;w=50&amp;zc=1" class="alignleft" alt="Power surge burned your HDD PCB? Here&#8217;s how to recover." />
+           
+	       	       </a>
+           
+           <h4 class="featured-title">
+	           <a href="http://www.mdproductions.ca/guides/power-surge-burned-your-hdd-pcb-heres-how-to-recover">Power surge burned your HDD PCB? Here&#8217;s how to recover.</a>
+	       </h4>
+	   </li>
+	</ul>
+	
+	</div> <!-- end .widget -->		<div class="widget">		<h3>Recent Posts</h3>		<ul>
+				<li><a href="http://www.mdproductions.ca/news/dating-redefined" title="Dating 2.0 &#8212; online dating redefined">Dating 2.0 &#8212; online dating redefined</a></li>
+				<li><a href="http://www.mdproductions.ca/news/serious-security-flaw-discovered-in-oauth-and-openid" title="Serious security flaw discovered in OAuth and OpenID">Serious security flaw discovered in OAuth and OpenID</a></li>
+				<li><a href="http://www.mdproductions.ca/news/what-facebook-knows-about-you-from-one-whatsapp-convo" title="What Facebook Knows About You From One WhatsApp Convo">What Facebook Knows About You From One WhatsApp Convo</a></li>
+				<li><a href="http://www.mdproductions.ca/news/mobile-market-share-android-79-apple-15" title="Mobile market share: Android 79%, Apple 15%">Mobile market share: Android 79%, Apple 15%</a></li>
+				<li><a href="http://www.mdproductions.ca/news/online-retailer-imposes-tax-on-internet-explorer-7-users" title="Online retailer imposes tax on Internet Explorer 7 users">Online retailer imposes tax on Internet Explorer 7 users</a></li>
+				</ul>
+		</div> <!-- end .widget --><div class="widget"><h3>Tag Cloud</h3><div class="tagcloud"><a href='http://www.mdproductions.ca/tag/3d' class='tag-link-162' title='14 topics' style='font-size: 12.472222222222pt;'>3d</a>
+<a href='http://www.mdproductions.ca/tag/1080p' class='tag-link-22' title='12 topics' style='font-size: 11.111111111111pt;'>1080p</a>
+<a href='http://www.mdproductions.ca/tag/ai' class='tag-link-674' title='10 topics' style='font-size: 9.75pt;'>AI</a>
+<a href='http://www.mdproductions.ca/tag/android' class='tag-link-136' title='31 topics' style='font-size: 18.888888888889pt;'>android</a>
+<a href='http://www.mdproductions.ca/tag/apple' class='tag-link-345' title='11 topics' style='font-size: 10.527777777778pt;'>apple</a>
+<a href='http://www.mdproductions.ca/tag/camera' class='tag-link-191' title='38 topics' style='font-size: 20.444444444444pt;'>camera</a>
+<a href='http://www.mdproductions.ca/tag/canon' class='tag-link-43' title='11 topics' style='font-size: 10.527777777778pt;'>canon</a>
+<a href='http://www.mdproductions.ca/tag/car' class='tag-link-196' title='14 topics' style='font-size: 12.472222222222pt;'>car</a>
+<a href='http://www.mdproductions.ca/tag/concept' class='tag-link-446' title='16 topics' style='font-size: 13.444444444444pt;'>concept</a>
+<a href='http://www.mdproductions.ca/tag/display' class='tag-link-607' title='10 topics' style='font-size: 9.75pt;'>display</a>
+<a href='http://www.mdproductions.ca/tag/facebook' class='tag-link-342' title='13 topics' style='font-size: 11.888888888889pt;'>facebook</a>
+<a href='http://www.mdproductions.ca/tag/fast' class='tag-link-558' title='12 topics' style='font-size: 11.111111111111pt;'>fast</a>
+<a href='http://www.mdproductions.ca/tag/focus' class='tag-link-50' title='9 topics' style='font-size: 8.9722222222222pt;'>focus</a>
+<a href='http://www.mdproductions.ca/tag/future' class='tag-link-273' title='11 topics' style='font-size: 10.527777777778pt;'>future</a>
+<a href='http://www.mdproductions.ca/tag/google' class='tag-link-128' title='46 topics' style='font-size: 22pt;'>google</a>
+<a href='http://www.mdproductions.ca/tag/gps' class='tag-link-238' title='15 topics' style='font-size: 12.861111111111pt;'>GPS</a>
+<a href='http://www.mdproductions.ca/tag/graphics' class='tag-link-249' title='8 topics' style='font-size: 8pt;'>graphics</a>
+<a href='http://www.mdproductions.ca/tag/hackers' class='tag-link-286' title='9 topics' style='font-size: 8.9722222222222pt;'>hackers</a>
+<a href='http://www.mdproductions.ca/tag/hacking' class='tag-link-275' title='10 topics' style='font-size: 9.75pt;'>hacking</a>
+<a href='http://www.mdproductions.ca/tag/hd' class='tag-link-13' title='23 topics' style='font-size: 16.361111111111pt;'>HD</a>
+<a href='http://www.mdproductions.ca/tag/internet' class='tag-link-300' title='13 topics' style='font-size: 11.888888888889pt;'>internet</a>
+<a href='http://www.mdproductions.ca/tag/lens' class='tag-link-53' title='12 topics' style='font-size: 11.111111111111pt;'>Lens</a>
+<a href='http://www.mdproductions.ca/tag/light' class='tag-link-505' title='11 topics' style='font-size: 10.527777777778pt;'>light</a>
+<a href='http://www.mdproductions.ca/tag/microsoft' class='tag-link-203' title='11 topics' style='font-size: 10.527777777778pt;'>microsoft</a>
+<a href='http://www.mdproductions.ca/tag/mobile' class='tag-link-179' title='10 topics' style='font-size: 9.75pt;'>mobile</a>
+<a href='http://www.mdproductions.ca/tag/network' class='tag-link-1264' title='9 topics' style='font-size: 8.9722222222222pt;'>network</a>
+<a href='http://www.mdproductions.ca/tag/performance' class='tag-link-99' title='20 topics' style='font-size: 15.194444444444pt;'>Performance</a>
+<a href='http://www.mdproductions.ca/tag/phone' class='tag-link-131' title='14 topics' style='font-size: 12.472222222222pt;'>phone</a>
+<a href='http://www.mdproductions.ca/tag/photo' class='tag-link-974' title='14 topics' style='font-size: 12.472222222222pt;'>photo</a>
+<a href='http://www.mdproductions.ca/tag/photography-2' class='tag-link-349' title='9 topics' style='font-size: 8.9722222222222pt;'>photography</a>
+<a href='http://www.mdproductions.ca/tag/power' class='tag-link-454' title='14 topics' style='font-size: 12.472222222222pt;'>power</a>
+<a href='http://www.mdproductions.ca/tag/privacy' class='tag-link-193' title='9 topics' style='font-size: 8.9722222222222pt;'>privacy</a>
+<a href='http://www.mdproductions.ca/tag/remote' class='tag-link-65' title='8 topics' style='font-size: 8pt;'>remote</a>
+<a href='http://www.mdproductions.ca/tag/research' class='tag-link-479' title='15 topics' style='font-size: 12.861111111111pt;'>research</a>
+<a href='http://www.mdproductions.ca/tag/resolution' class='tag-link-171' title='10 topics' style='font-size: 9.75pt;'>resolution</a>
+<a href='http://www.mdproductions.ca/tag/robot' class='tag-link-673' title='9 topics' style='font-size: 8.9722222222222pt;'>robot</a>
+<a href='http://www.mdproductions.ca/tag/scan' class='tag-link-56' title='8 topics' style='font-size: 8pt;'>scan</a>
+<a href='http://www.mdproductions.ca/tag/security' class='tag-link-98' title='21 topics' style='font-size: 15.583333333333pt;'>Security</a>
+<a href='http://www.mdproductions.ca/tag/smart' class='tag-link-561' title='9 topics' style='font-size: 8.9722222222222pt;'>SMART</a>
+<a href='http://www.mdproductions.ca/tag/smartphone' class='tag-link-163' title='30 topics' style='font-size: 18.5pt;'>smartphone</a>
+<a href='http://www.mdproductions.ca/tag/speed' class='tag-link-442' title='25 topics' style='font-size: 16.944444444444pt;'>speed</a>
+<a href='http://www.mdproductions.ca/tag/tracking' class='tag-link-183' title='9 topics' style='font-size: 8.9722222222222pt;'>tracking</a>
+<a href='http://www.mdproductions.ca/tag/video' class='tag-link-205' title='22 topics' style='font-size: 15.972222222222pt;'>video</a>
+<a href='http://www.mdproductions.ca/tag/vulnerability' class='tag-link-281' title='9 topics' style='font-size: 8.9722222222222pt;'>vulnerability</a>
+<a href='http://www.mdproductions.ca/tag/wireless' class='tag-link-61' title='15 topics' style='font-size: 12.861111111111pt;'>wireless</a></div>
+</div> <!-- end .widget --><div class="widget"><h3>Random Photo</h3><div id="random_image_wrapper" style="text-align:center;"><span></span>
+<a href="http://www.mdproductions.ca/photo/Photoshoots/Fashion-shows/IMG_5339.jpg"><img src="http://www.mdproductions.ca/photo/Photoshoots/Fashion-shows/IMG_5339.jpg" height="250" alt="" /></a>
+
+
+</div>
+<!---Random Image displayed in 0.043236 seconds.-->
+</div> <!-- end .widget -->		
+</div> <!-- end #sidebar -->            </div><!-- .content_wrap --> 
+        </div><!-- .content_wrap --> 
+    </div><!-- #content --> 
+</div><!-- .wrapper --> 
+<br class="clear" />
+<script src="http://www.mdproductions.ca/wp-content/themes/GentleBreeze/js/colaborate_thin.js" type="text/javascript"></script> 
+<script type="text/javascript"> 
+//<![CDATA[
+	jQuery.noConflict();
+	
+	Cufon.replace('h1')('h2',{textShadow:'1px 1px 0px #fff'})('h3',{textShadow:'1px 1px 0px #fff'})('#quote div span',{textShadow:'1px 1px 0px #fff'})('#blurbs div span.titles')('h5')('.hover span',{textShadow:'1px 1px 0px #fff'})('.fn',{textShadow:'1px 1px 0px #fff'});
+	
+	jQuery('ul.superfish').superfish({ 
+		delay:       200,                            // one second delay on mouseout 
+		animation:   {'marginLeft':'0px',opacity:'show'},  // fade-in and slide-down animation 
+		speed:       'fast',                          // faster animation speed
+		onBeforeShow: function(){ this.css('marginLeft','20px'); }, 			
+		autoArrows:  true,                           // disable generation of arrow mark-up 
+		dropShadows: false                            // disable drop shadows 
+	});
+	
+		
+	jQuery("a.lightbox").fancybox({
+		'overlayShow'			: false,
+		'zoomSpeedIn'			: 600,
+		'zoomSpeedOut'			: 500,
+		'easingIn'				: 'easeOutBack',
+		'easingOut'				: 'easeInBack'
+	});
+	
+	jQuery('.gallery_item .thumb').hover(function() {
+		jQuery(this).children('.readmore').animate({opacity:'show', 'top':'170px'}, "fast");
+	}, function() {
+		jQuery(this).children('.readmore').animate({opacity:'hide', 'top':'148px'}, "fast");
+	});
+	
+	var pagemenuwidth = jQuery("ul.nav").width();
+	var pagemleft = Math.round((960 - pagemenuwidth) / 2);
+	jQuery("ul.nav").css('padding-left',pagemleft);
+
+	
+	jQuery('div#navwrap ul.nav li a').hover(function() {
+		jQuery(this).animate({opacity: .4}, "fast");
+	}, function() {
+		jQuery(this).animate({opacity: 1}, "fast");
+	});
+	
+	jQuery('img#logo').hover(function() {
+		jQuery(this).animate({opacity: .6}, "fast");
+	}, function() {
+		jQuery(this).animate({opacity: 1}, "fast");
+	});
+	
+	jQuery('.thumb div .image').hover(function() {
+		jQuery(this).animate({opacity: .8}, "fast");
+	}, function() {
+		jQuery(this).animate({opacity: 1}, "fast");
+	});
+
+		Cufon.now();
+//]]>	
+</script> <script type='text/javascript' src='http://www.mdproductions.ca/wp-content/plugins/fancybox-for-wordpress/fancybox/jquery.fancybox.js?ver=1.3.4'></script>
+<script type='text/javascript' src='http://www.mdproductions.ca/wp-content/themes/GentleBreeze/epanel/page_templates/js/et-ptemplates-frontend.js?ver=1.1'></script>
+	
+</body>
+</html>
+
+<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
+
+Minified using disk
+Page Caching using disk: enhanced
+Database Caching 1/31 queries in 0.027 seconds using disk
+Object Caching 1577/1609 objects using disk
+
+ Served from: www.mdproductions.ca @ 2015-07-19 22:22:23 by W3 Total Cache -->

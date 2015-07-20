@@ -1,0 +1,19 @@
+.scAppCalendarPage { background-image: none; opacity: 1; filter: alpha(opacity=100) }
+.fc-header-title { color: #000000; font-family: Verdana, Tahoma }
+.fc-sun { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-mon { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-tue { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-wed { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-thu { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-fri { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-sat { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-agenda-axis { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-agenda-gutter { background-image: none; opacity: 1; filter: alpha(opacity=100); color: #4CAEE2; font-family: Verdana, Tahoma; font-size: 12px; font-style: normal; font-weight: bold; padding: 2px; text-decoration: none; vertical-align: middle }
+.fc-axis { background-color: #F00; color: #000; font-family: Verdana, Tahoma; font-size: 12px }
+.fc-not-today { color: #000; font-family: Verdana, Tahoma; font-size: 12px }
+.scCalendarEventPast { background-image: none; opacity: 1; filter: alpha(opacity=100) }
+.scCalendarEventOnDay { background-image: none; opacity: 1; filter: alpha(opacity=100) }
+.scCalendarEventFuture { background-image: none; opacity: 1; filter: alpha(opacity=100) }
+.scCalendarPrintDate { text-decoration: none }
+.scCalendarPrintTime { text-decoration: none }
+.scCalendarPrintEvent { text-decoration: none }

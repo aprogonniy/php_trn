@@ -1,0 +1,223 @@
+<html>
+<head>
+<title>USE Method: Mac OS X Performance Checklist</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Brendan Gregg">
+<meta name="GENERATOR" content="Vim">
+<meta name="KeyWords" content="USE Method Mac OS X performance checklist">
+<link rel="stylesheet" href="../page.css">
+<style type="text/css">
+tt { font-size:14px; }
+</style>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7747513-3']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+
+<div class="nav">
+<p class="navhdr">This Site:</p>
+<a href="/index.html">Homepage</a><br>
+<a href="/blog/index.html">Blog</a><br>
+<a href="/sitemap.html">Full Site Map</a><br>
+<a href="/sysperfbook.html">Sys Perf book</a><br>
+<a href="/linuxperf.html">Linux Perf</a><br>
+<a href="/methodology.html">Perf Methods</a><br>
+<a href="/usemethod.html">USE Method</a><br>
+<a href="/tsamethod.html">TSA Method</a><br>
+<a href="/offcpuanalysis.html">Off-CPU Analysis</a><br>
+<a href="/activebenchmarking.html">Active Bench.</a><br>
+<a href="/flamegraphs.html">Flame Graphs</a><br>
+<a href="/heatmaps.html">Heat Maps</a><br>
+<a href="/frequencytrails.html">Frequency Trails</a><br>
+<a href="/colonygraphs.html">Colony Graphs</a><br>
+<a href="/perf.html">perf Examples</a><br>
+<a href="/ktap.html">ktap Examples</a><br>
+<a href="/dtrace.html">DTrace Tools</a><br>
+<a href="/dtracetoolkit.html">DTraceToolkit</a><br>
+<a href="/dtkshdemos.html">DtkshDemos</a><br>
+<a href="/guessinggame.html">Guessing Game</a><br>
+<a href="/specials.html">Specials</a><br>
+<a href="/books.html">Books</a><br>
+<a href="/sites.html">Other Sites</a><br>
+
+<br>
+<p class="navhdr">This Page:</p>
+<a href="use-linux.html">USE OS X</a><br>
+&nbsp; <a href="#Hardware">Hardware</a><br>
+&nbsp; <a href="#Software">Software</a><br>
+&nbsp; <a href="#Other">Other</a><br>
+&nbsp; <a href="#Acknowledgements">Acks</a><br>
+<p class="navhdr2">USE Checklists:</p>
+<a href="use-rosetta.html">Rosetta</a><br> 
+<a href="use-linux.html">Linux</a><br>
+<a href="use-solaris.html">Solaris</a><br>
+<a href="use-macosx.html">Mac OS X</a><br>
+<a href="use-freebsd.html">FreeBSD</a><br>
+<a href="use-unix7th.html">Unix 7th</a><br>
+<a href="use-smartos.html">SmartOS</a><br>
+</div>
+
+<div class="content">
+<h1>USE Method: Mac OS X Performance Checklist</h1>
+
+<p>This is my example <a href="../usemethod.html">USE Method</a>-based performance checklist for the Apple Mac OS X operating system, for identifying common bottlenecks and errors. This draws upon both command line and graphical tools for coverage, focusing where possible on those that are provided with the OS by default, or by Apple (eg, Instruments). Further notes about tools are provided after this table.</p>
+
+<p>Some of the metrics are easy to find in various GUIs or from the command line (eg, using Terminal; if you've never used Terminal before, follow my instructions at the top of <a href="http://dtrace.org/blogs/brendan/2011/10/10/top-10-dtrace-scripts-for-mac-os-x/">this post</a>). Many metrics require some math, inference, or quite a bit of digging. This will hopefully get easier in the future, as tools include a USE method wizard or the metrics required to follow this easily.</p>
+
+<a name="Hardware"></a>
+<h2>Physical Resources, Standard</h2>
+
+<table border=1 cellpadding=2 width="100%">
+<tr><th>component</th><th>type</th><th>metric</th></tr>
+
+<!HW-START>
+<tr bgcolor="#ffe8e8"><td>CPU</td><td>utilization</td><td>system-wide: <tt>iostat 1</tt>, "us" + "sy"; per-cpu: DTrace [1]; Activity Monitor &rarr; CPU Usage or Floating CPU Window; per-process: <tt>top -o cpu</tt>, "%CPU"; Activity Monitor &rarr; Activity Monitor, "%CPU"; per-kernel-thread: DTrace profile stack()</td></tr>
+<tr bgcolor="#ffe8e8"><td>CPU</td><td>saturation</td><td>system-wide: <tt>uptime</tt>, "load averages" &gt; CPU count; <tt>latency</tt>, "SCHEDULER" and "INTERRUPTS"; per-cpu: <tt>dispqlen.d</tt> (DTT), non-zero "value"; <tt>runocc.d</tt> (DTT), non-zero "%runocc"; per-process: Instruments &rarr; Thread States, "On run queue"; DTrace [2]</td></tr>
+<tr bgcolor="#ffe8e8"><td>CPU</td><td>errors</td><td><tt>dmesg</tt>; /var/log/system.log; Instruments &rarr; Counters, for PMC and whatever error counters are supported (eg, thermal throttling)</td></tr>
+
+<tr bgcolor="#e8ffe8"><td>Memory capacity</td><td>utilization</td><td>system-wide: <tt>vm_stat 1</tt>, main memory free = "free" + "inactive", in units of pages; Activity Monitor &rarr; Activity Monitor &rarr; System Memory, "Free" for main memory; per-process: <tt>top -o rsize</tt>, "RSIZE" is resident main memory size, "VSIZE" is virtual memory size; <tt>ps -alx</tt>, "RSS" is resident set size, "SZ" is virtual memory size; <tt>ps aux</tt> similar (legacy format)</td></tr>
+<tr bgcolor="#e8ffe8"><td>Memory capacity</td><td>saturation</td><td>system-wide: <tt>vm_stat 1</tt>, "pageout"; per-process: anonpgpid.d (DTT), DTrace vminfo:::anonpgin [3] (frequent anonpgin == pain); Instruments &rarr; Memory Monitor, high rate of "Page Ins" and "Page Outs"; <tt>sysctl vm.memory_pressure</tt> [4]</td></tr>
+<tr bgcolor="#e8ffe8"><td>Memory capacity</td><td>errors</td><td>System Information &rarr; Hardware &rarr; Memory, "Status" for physical failures; DTrace failed malloc()s</td></tr>
+
+<tr bgcolor="#ffffe8"><td>Network Interfaces</td><td>utilization</td><td>system-wide: <tt>netstat -i 1</tt>, assume one very busy interface and use input/output "bytes" / known max (note: includes localhost traffic); per-interface: <tt>netstat -I <i>interface</i> 1</tt>, input/output "bytes" / known max; Activity Monitor &rarr; Activity Monitor &rarr; Network, "Data received/sec" "Data sent/sec" / known max (note: includes localhost traffic); atMonitor, <i>interface</i> percent</td></tr>
+<tr bgcolor="#ffffe8"><td>Network Interfaces</td><td>saturation</td><td>system-wide: <tt>netstat -s</tt>, for saturation related metrics, eg <tt>netstat -s | egrep 'retrans|overflow|full|out of space|no bufs'</tt>; per-interface: DTrace</td></tr>
+<tr bgcolor="#ffffe8"><td>Network Interfaces</td><td>errors</td><td>system-wide: <tt>netstat -s | grep bad</tt>, for various metrics; per-interface: <tt>netstat -i</tt>, "Ierrs", "Oerrs" (eg, late collisions), "Colls" [5]</td></tr>
+
+<tr bgcolor="#e8e8ff"><td>Storage device I/O</td><td>utilization</td><td>system-wide: <tt>iostat 1</tt>, "KB/t" and "tps" are rough usage stats [6]; DTrace could be used to calculate a percent busy, using io provider probes; atMonitor, "disk0" is percent busy; per-process: iosnoop (DTT), shows usage; iotop (DTT), has -P for percent I/O</td></tr>
+<tr bgcolor="#e8e8ff"><td>Storage device I/O</td><td>saturation</td><td>system-wide: iopending (DTT)</td></tr>
+<tr bgcolor="#e8e8ff"><td>Storage device I/O</td><td>errors</td><td>DTrace io:::done probe when /args[0]-&gt;b_error == 0/</td></tr>
+
+<tr bgcolor="#ffe8ff"><td>Storage capacity</td><td>utilization</td><td>file systems: <tt>df -h</tt>; swap: <tt>sysctl vm.swapusage</tt>, for swap file usage; Activity Monitor &rarr; Activity Monitor &rarr; System Memory, "Swap used"</td></tr>
+<tr bgcolor="#ffe8ff"><td>Storage capacity</td><td>saturation</td><td>not sure this one makes sense - once its full, ENOSPC</td></tr>
+<tr bgcolor="#ffe8ff"><td>Storage capacity</td><td>errors</td><td>DTrace; /var/log/system.log file system full messages</td></tr>
+
+</table>
+<br>
+
+<ul>
+<li>[1] eg: dtrace -x aggsortkey -n 'profile-100 /!(curthread-&gt;state &amp; 0x80)/ { @ = lquantize(cpu, 0, 1000, 1); } tick-1s { printa(@); clear(@); }'. Josh Clulow also wrote a simple C program to dig out per-CPU utilization: <a href="https://github.com/jclulow/terminal-heatmap/tree/master/macosx">cpu_usage.c</a>.</li>
+<li>[2] Until there are sched:::enqueue/dequeue probes, I suspect this could be done using fbt tracing of thread_*(). I haven't tried yet. It might be worth seeing what Instruments uses for its "On run queue" thread state trace, and DTracing that.</li>
+<li>[3] eg: dtrace -n 'vminfo:::anonpgin { printf("%Y %s", walltimestamp, execname); }'.</li>
+<li>[4] the kernel source under bsd/vm/vm_unix.c describes this as "Memory pressure indicator", although I've yet to see this as non-zero.</li>
+<li>[5] the netstat(1) man page reads: "BUGS: The notion of errors is ill-defined."</li>
+<li>[6] it would be great if Mac OS X iostat added a -x option to include utilization, saturation, and error columns, like Solaris "iostat -xnze 1".</li>
+<li><a href="http://www.atpurpose.com/atMonitor/">atMonitor</a> is a 3rd party tool that provides various statistics; I'm running version 2.7b, although it crashes if you leave the "Top Window" open for more than 2 seconds.</li>
+<li>Activity Monitor is a default Apple performance monitoring tool with a graphical interface.</li>
+<li>Instruments is an Apple performance analysis product with a graphical interface. It is comprehensive, consuming performance data from multiple frameworks, including DTrace. Instruments also includes functionality that was provided by separate previous performance analysis products, like CHUD and Shark, making it a one stop shop. It'd be wonderful if it included <a href="http://dtrace.org/blogs/brendan/2013/05/19/revealing-hidden-latency-patterns/">latency heat maps</a> as well :-).</li>
+<li>Temperature Monitor: 3rd party software that can read various temperature probes.</li>
+<li>PMC == <a href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/AnalysingCPUUsageinYourOSXApp/AnalysingCPUUsageinYourOSXApp.html#//apple_ref/doc/uid/TP40004652-CH16-SW3">Performance Monitor Counters</a>, aka CPU Performance Counters (CPC), Performance Instrumentation Counters (PICs), and more.  These are processor hardware counters that are read via programmable registers on each CPU.</li>
+<li>DTT == <a href="http://www.brendangregg.com/dtrace.html#DTraceToolkit">DTraceToolkit</a> scripts, many of which were ported by the Apple engineers and shipped by default with Mac OS X. ie, you should be able to run these immediately, eg, <tt>sudo runocc.d</tt>.</li>
+</ul>
+
+<h2>Physical Resources, Advanced</h2>
+
+<table border=1 cellpadding=2 width="100%">
+<tr><th>component</th><th>type</th><th>metric</th></tr>
+
+<tr bgcolor="#ffe8e0"><td>GPU</td><td>utilization</td><td>directly: DTrace [7]; atMonitor, "gpu"; indirect: Temperature Monitor; atMonitor, "gput"</td></tr>
+<tr bgcolor="#ffe8e0"><td>GPU</td><td>saturation</td><td>DTrace [7]; Instruments &rarr; OpenGL Driver, "Client GLWait Time" (maybe)</td></tr>
+<tr bgcolor="#ffe8e0"><td>GPU</td><td>errors</td><td>DTrace [7] </td></tr>
+
+<tr bgcolor="#e8ffff"><td>Storage controller</td><td>utilization</td><td><tt>iostat 1</tt>, compare to known IOPS/tput limits per-card</td></tr>
+<tr bgcolor="#e8ffff"><td>Storage controller</td><td>saturation</td><td>DTrace and look for kernel queueing</td></tr>
+<tr bgcolor="#e8ffff"><td>Storage controller</td><td>errors</td><td>DTrace the driver</td></tr>
+
+<tr bgcolor="#e8ffff"><td>Network controller</td><td>utilization</td><td>system-wide: <tt>netstat -i 1</tt>, assume one busy controller and examine input/output "bytes" / known max (note: includes localhost traffic)</td></tr>
+<tr bgcolor="#e8ffff"><td>Network controller</td><td>saturation</td><td>see network interface saturation</td></tr>
+<tr bgcolor="#e8ffff"><td>Network controller</td><td>errors</td><td>see network interface errors</td></tr>
+
+<tr bgcolor="#fff8e0"><td>CPU interconnect</td><td>utilization</td><td>for multi-processor systems, try Instruments &rarr; Counters, and relevent PMCs for CPU interconnect port I/O, and measure throughput / max</td></tr>
+<tr bgcolor="#fff8e0"><td>CPU interconnect</td><td>saturation</td><td>Instruments &rarr; Counters, and relevent PMCs for stall cycles</td></tr>
+<tr bgcolor="#fff8e0"><td>CPU interconnect</td><td>errors</td><td>Instruments &rarr; Counters, and relevent PMCs for whatever is available</td></tr>
+
+<tr bgcolor="#fff8e0"><td>Memory interconnect</td><td>utilization</td><td>Instruments &rarr; Counters, and relevent PMCs for memory bus throughput / max, or, measure CPI and treat, say, 5+ as high utilization; Shark had "Processor bandwidth analysis" as a feature, which either was or included memory bus throughput, but I never used it</td></tr>
+<tr bgcolor="#fff8e0"><td>Memory interconnect</td><td>saturation</td><td>Instruments &rarr; Counters, and relevent PMCs for stall cycles</td></tr>
+<tr bgcolor="#fff8e0"><td>Memory interconnect</td><td>errors</td><td>Instruments &rarr; Counters, and relevent PMCs for whatever is available</td></tr>
+
+<tr bgcolor="#fff8e0"><td>I/O interconnect</td><td>utilization</td><td>Instruments &rarr; Counters, and relevent PMCs for tput / max if available; inference via known tput from iostat/...</td></tr>
+<tr bgcolor="#fff8e0"><td>I/O interconnect</td><td>saturation</td><td>Instruments &rarr; Counters, and relevent PMCs for stall cycles</td></tr>
+<tr bgcolor="#fff8e0"><td>I/O interconnect</td><td>errors</td><td>Instruments &rarr; Counters, and relevent PMCs for whatever is available </td></tr>
+
+</table>
+
+<ul>
+<li>[7] I haven't found a shipped tool to provide GPU statistics easily. I'd like a <tt>gpustat</tt> that behaved like <tt>mpstat</tt>, with at least the columns: utilization, saturation, errors. Until there is such a tool, you could trace GPU activity (at least the scheduling of activity) using DTrace on the graphics drivers. It won't be easy. I imagine Instruments will at some point add a GPU instrument set (other than the OpenGL instruments), otherwise, 3rd party tools can be used, like atMonitor.</li>
+<li>CPI == Cycles Per Instruction (others use IPC == Instructions Per Cycle).</li>
+<li>I/O interconnect: this includes the CPU to I/O controller busses, the I/O controller(s), and device busses (eg, PCIe).</li>
+<li>Using PMCs is typically a lot of work. This involves researching the processor manuals to see what counters are available and what they mean, and then collecting and interpreting them. I've used them on other OSes, but haven't used them all under Instruments &rarr; Counters, so I don't know if there's a hitch with anything there. Good luck.</li>
+</ul>
+
+<a name="Software"></a>
+<h2>Software Resources</h2>
+
+<table border=1 width="100%">
+<tr><th>component</th><th>type</th><th>metric</th></tr>
+
+<!SW-START>
+<tr bgcolor="#f0e0ff"><td>Kernel mutex</td><td>utilization</td><td>DTrace and lockstat provider for held times</td></tr>
+<tr bgcolor="#f0e0ff"><td>Kernel mutex</td><td>saturation</td><td>DTrace and lockstat provider for contention times [8]</td></tr>
+<tr bgcolor="#f0e0ff"><td>Kernel mutex</td><td>errors</td><td>DTrace and fbt provider for return probes and error status</td></tr>
+
+<tr bgcolor="#e0f0ff"><td>User mutex</td><td>utilization</td><td><tt>plockstat -H</tt> (held time); DTrace plockstat provider</td></tr>
+<tr bgcolor="#e0f0ff"><td>User mutex</td><td>saturation</td><td><tt>plockstat -C</tt> (contention); DTrace plockstat provider</td></tr>
+<tr bgcolor="#e0f0ff"><td>User mutex</td><td>errors</td><td>DTrace plockstat and pid providers, for EDEADLK, EINVAL, ... see pthread_mutex_lock(3C)</tt></td></tr>
+
+<tr bgcolor="#f0ffe0"><td>Process capacity</td><td>utilization</td><td>current/max using: <tt>ps -e | wc -l</tt> / <tt>sysctl kern.maxproc</tt>; <tt>top</tt>, "Processes:" also shows current</td></tr>
+<tr bgcolor="#f0ffe0"><td>Process capacity</td><td>saturation</td><td>not sure this makes sense</td></tr>
+<tr bgcolor="#f0ffe0"><td>Process capacity</td><td>errors</td><td>"can't fork()" messages</td></tr>
+
+<tr bgcolor="#fffff0"><td>File descriptors</td><td>utilization</td><td>system-wide: <tt>sysctl kern.num_files</tt> / <tt>sysctl kern.maxfiles</tt>; per-process: can figure out using <tt>lsof</tt> and <tt>ulimit -n</tt></td></tr>
+<tr bgcolor="#fffff0"><td>File descriptors</td><td>saturation</td><td>I don't think this one makes sense, as if it can't allocate or expand the array, it errors; see fdalloc()</td></tr>
+<tr bgcolor="#fffff0"><td>File descriptors</td><td>errors</td><td><tt>dtruss</tt> or custom DTrace to look for errno == EMFILE on syscalls returning fds (eg, open(), accept(), ...)</td></tr>
+</table>
+
+<ul>
+<li>[8] eg, showing adaptive lock block time totals (in nanoseconds) by calling function name: dtrace -n 'lockstat:::adaptive-block { @[caller] = sum(arg1); } END { printa("%40a%@16d ns\n", @); }'</li>
+</ul>
+
+<a href="Other"></a>
+<h2>Other Tools</h2>
+
+<p>I didn't include <tt>fs_usage</tt>, <tt>sc_usage</tt>, <tt>sample</tt>, <tt>spindump</tt>, <tt>heap</tt>, <tt>vmmap</tt>, <tt>malloc_history</tt>, <tt>leaks</tt>, and other useful Mac OS X performance tools, as here I'm beginning with questions (the methodology) and only including tools that answer them. This is instead of the other way around: listing all the tools and trying to find a use for them. Those other tools are useful for other methodologies, which can be used after this one.</p>
+
+<h2>What's Next</h2>
+
+<p>See <a href="../usemethod.html">the USE Method</a> for the follow-up methodologies after identifying a possible bottleneck.  If you complete this checklist but still have a performance issue, move onto other methodologies: drill-down analysis and latency analysis.</p>
+
+<p>For more performance analysis, also see my earlier post on <a href="http://dtrace.org/blogs/brendan/2011/10/10/top-10-dtrace-scripts-for-mac-os-x/">Top 10 DTrace Scripts for Mac OS X</a>.</p>
+
+<a name="Acknowledgements"></a>
+<h2>Acknowledgements</h2>
+
+<p>Resources used:</p>
+
+<ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/Introduction/Introduction.html">Instruments User Guide</a> and <a href="https://developer.apple.com/library/ios/documentation/AnalysisTools/Reference/Instruments_User_Reference/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011355">Instruments User Reference</a></li>
+<li>Apple's <a href="https://developer.apple.com/library/ios/documentation/Performance/Conceptual/PerformanceOverview/PerformanceTools/PerformanceTools.html#//apple_ref/doc/uid/TP40001410-CH205-BCIIHAAJ">Performance Tools</a> summary</li>
+<li><a href="http://www.opensource.apple.com/source/man/man-151/usr/man/">man pages</a></li>
+<li><a href="http://www.opensource.apple.com/source/xnu/">xnu source code</a> (kernel)</li>
+<li>Mac OS X Internals, by Amit Singh, and his online list of <a href="http://osxbook.com/book/bonus/misc/optimizations/">performance tools</a></li>
+</ul>
+
+<p>Filling this this checklist has required a lot of research, testing and experimentation.  Please reference back to this post if it helps you develop related material.</p>
+
+<p>It's quite possible I've missed something or included the wrong metric somewhere (sorry); I'll update the post to fix these up as they are understood, and note at the top the update date.</p>
+
+<p>Also see my USE method performance checklists for <a href="use-solaris.html">Solaris</a>, <a href="use-smartos.html">SmartOS</a>, <a href="use-linux.html">Linux</a>, and <a href="use-freebsd.html">FreeBSD</a>.</p>
+
+</div>
+</font>
+<hr>
+Last updated: 09-Feb-2014</br>
+
+</body>
+</html>
