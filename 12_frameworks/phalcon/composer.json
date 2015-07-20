@@ -1,0 +1,7 @@
+{
+  "name": "phalcont-test-rest-api",
+  "description": "Phalcon test application",
+  "require": {
+    "phalcon/devtools": "dev-master"
+  }
+}

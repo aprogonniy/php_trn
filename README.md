@@ -11,7 +11,7 @@
 9. -
 10. TBD
 11. -
-12. TBD
+12. Results could be found in "12_frameworks" directory.
 13. Results and useful information could be found in "13_performance_optim" directory.
 
 Global system tools and configurations could be found in "0_common" directory.
