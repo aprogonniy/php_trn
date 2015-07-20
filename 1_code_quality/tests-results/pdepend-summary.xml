@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metrics generated="2015-07-20T16:38:06" pdepend="@package_version@" ahh="0" andc="0" calls="12" ccn="10" ccn2="14" cloc="0" clsa="0" clsc="1" eloc="95" fanout="0" leafs="1" lloc="34" loc="113" maxDIT="0" ncloc="113" noc="1" nof="0" noi="0" nom="5" nop="1" roots="0">
+  <files>
+    <file name="C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php" loc="113" cloc="0" eloc="95" lloc="34" ncloc="113"/>
+  </files>
+  <package name="+global" noc="1" noi="0" nom="5" nof="0" cr="0.15" rcr="0.15">
+    <class name="simpleCMS" loc="109" cloc="0" eloc="87" lloc="25" ncloc="109" dit="0" noam="0" nocc="0" noom="0" nom="5" cr="0.15" rcr="0.15" ca="0" cbo="0" ce="0" impl="0" cis="8" csz="9" npm="4" vars="4" varsi="4" varsnp="4" wmc="14" wmci="14" wmcnp="13">
+      <file name="C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php"/>
+      <method name="display_public" ccn="3" ccn2="4" loc="44" cloc="0" eloc="38" lloc="10" ncloc="44" npath="4" hnt="36" hnd="71" hv="221.39089630217" hd="6.6857142857143" hl="0.14957264957265" he="1480.1562781345" ht="82.230904340805" hb="0.043292944666746" hi="33.114022951179" mi="48.579806274302"/>
+      <method name="display_admin" ccn="1" ccn2="1" loc="22" cloc="0" eloc="21" lloc="1" ncloc="22" npath="1" hnt="9" hnd="10" hv="29.897352853986" hd="3.75" hl="0.26666666666667" he="112.11507320245" ht="6.2286151779138" hb="0.0077503517809905" hi="7.9726274277297" mi="60.690253101999"/>
+      <method name="write" ccn="4" ccn2="5" loc="13" cloc="0" eloc="13" lloc="9" ncloc="13" npath="12" hnt="25" hnd="58" hv="146.44952487819" hd="6.3148148148148" hl="0.158357771261" he="924.80162932338" ht="51.377868295743" hb="0.031640582442429" hi="23.191420361942" mi="59.863789531156"/>
+      <method name="connect" ccn="1" ccn2="3" loc="6" cloc="0" eloc="5" lloc="3" ncloc="6" npath="1" hnt="19" hnd="32" hv="95" hd="8.5909090909091" hl="0.11640211640212" he="816.13636363636" ht="45.340909090909" hb="0.029110783722844" hi="11.058201058201" mi="70.501138001313"/>
+      <method name="buildDB" ccn="1" ccn2="1" loc="11" cloc="0" eloc="10" lloc="2" ncloc="11" npath="1" hnt="9" hnd="11" hv="31.134884567736" hd="5.25" hl="0.19047619047619" he="163.45814398061" ht="9.0810079989229" hb="0.0099651334916741" hi="5.9304542033782" mi="67.595796089544"/>
+    </class>
+  </package>
+</metrics>

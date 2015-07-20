@@ -1,0 +1,5 @@
+phpcpd 2.0.2-4-g51cf0bf by Sebastian Bergmann.
+
+0.00% duplicated lines out of 165 total lines of code.
+
+Time: 225 ms, Memory: 2.25Mb

@@ -1,0 +1,24 @@
+{
+  "name": "PHPTrn_1",
+  "description": "PHP training project.",
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4",
+    "behat/behat": "*",
+    "behat/mink": "*",
+    "behat/mink-extension": "*",
+    "behat/mink-sahi-driver": "*",
+    "behat/mink-goutte-driver": "*"
+  },
+  "config": {
+    "bin-dir": "bin/"
+  },
+  "require-dev": {
+    "phploc/phploc": "*",
+    "pdepend/pdepend": "2.1.0",
+    "phpmd/phpmd": "@stable",
+    "sebastian/phpcpd": "*",
+    "sebastian/hhvm-wrapper": "*",
+    "phpunit/phpunit": "4.7.*"
+  }
+}

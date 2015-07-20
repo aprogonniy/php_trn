@@ -1,0 +1,6 @@
+
+C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php:11	Avoid variables with short names like $q. Configured minimum length is 3.
+C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php:12	Avoid variables with short names like $r. Configured minimum length is 3.
+C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php:15	Avoid variables with short names like $a. Configured minimum length is 3.
+C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php:78	Avoid unused parameters such as '$p'.
+C:\development-PHPTRN\src\1_code_quality\src\_class\simpleCMS.php:78	Avoid variables with short names like $p. Configured minimum length is 3.

@@ -1,0 +1,44 @@
+PDepend 2.1.0
+
+Parsing source files:
+..                                                               2
+
+Calculating Cyclomatic Complexity metrics:
+                                                                12
+
+Calculating Node Loc metrics:
+                                                                 8
+
+Calculating NPath Complexity metrics:
+                                                                12
+
+Calculating Inheritance metrics:
+                                                                 2
+
+Calculating Node Count metrics:
+                                                                 7
+
+Calculating Hierarchy metrics:
+                                                                11
+
+Calculating Code Rank metrics:
+                                                                 2
+
+Calculating Coupling metrics:
+                                                                12
+
+Calculating Class Level metrics:
+                                                                11
+
+Calculating Cohesion metrics:
+                                                                13
+
+Calculating Halstead metrics:
+                                                                12
+
+Calculating Maintainability Index metrics:
+                                                                12
+
+Generating pdepend log files, this may take a moment.
+
+Time: 0:00:00; Memory: 7.50Mb

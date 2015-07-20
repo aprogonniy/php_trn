@@ -1,6 +1,6 @@
 # PHP training results
 
-1. TBD
+1. Results could be found in "1_code_quality" directory.
 2. Results could be found in "2_sorting" directory.
 3. Results could be found in "3_data_structures" directory.
 4. Results could be found in "4_patterns" directory.
