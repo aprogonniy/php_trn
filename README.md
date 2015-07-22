@@ -6,10 +6,10 @@
 4. Results could be found in "4_patterns" directory.
 5. Results could be found in "5_dev_tools" directory.
 6. Useful information could be found in "6_os_fundamentals" directory.
-7. TBD
+7. Results could be found in "7_testing" directory.
 8. -
 9. -
-10. TBD
+10. See task #7 results.
 11. -
 12. Results could be found in "12_frameworks" directory.
 13. Results and useful information could be found in "13_performance_optim" directory.
